@@ -1,0 +1,4 @@
+/home/miskolczir/Documents/Code/Console/C#/Actual Expense Calculator/obj/Debug/netcoreapp2.2/Actual Expense Calculator.csprojAssemblyReference.cache
+/home/miskolczir/Documents/Code/Console/C#/Actual Expense Calculator/obj/Debug/netcoreapp2.2/Actual Expense Calculator.csproj.CoreCompileInputs.cache
+/home/miskolczir/Documents/Code/Console/C#/Actual Expense Calculator/obj/Debug/netcoreapp2.2/Actual Expense Calculator.AssemblyInfoInputs.cache
+/home/miskolczir/Documents/Code/Console/C#/Actual Expense Calculator/obj/Debug/netcoreapp2.2/Actual Expense Calculator.AssemblyInfo.cs
