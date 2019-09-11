@@ -1,16 +1,21 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 
 namespace Actual_Expense_Calculator
 {
     class Program
     {
         #region Static Fields
-        static struct Balance
+        struct Balance
         {
-          public int Cash {get; set;}
-          public int Card {get; set;}
+          public int Cash; /*{get; set;}*/
+          public int Card; /*{get; set;}*/
         }
+
+        //I'm very ashamed of these two
+        static Balance balance;
+        static FileManagment fileManagment = new FileManagment();
         #endregion
 
         static void Introduction()
@@ -26,27 +31,24 @@ namespace Actual_Expense_Calculator
             try
             {
               Console.Write("What is your account balance?: ");
-              Balance.Card = Convert.ToInt32(Console.ReadLine());
+              balance.Card = Convert.ToInt32(Console.ReadLine());
 
               Console.Write("What is your cash amount?: ");
-              Balance.Cash = Convert.ToInt32(Console.ReadLine());
+              balance.Cash = Convert.ToInt32(Console.ReadLine());
               break;
             } catch (FormatException e)
             {
               Console.WriteLine("You can only enter numbers!");
-              FileManagment.LogError(e);
+              fileManagment.LogError(e);
               continue;
             }
           } while (true);
+
+          fileManagment.Save();
         }
 
-        static class FileManagment
+        class FileManagment
         {
-          public void Create()
-          {
-            File saveFile = new File("./.save");
-            saveFile.Close();
-          }
 
           public void Erase()
           {
@@ -55,16 +57,27 @@ namespace Actual_Expense_Calculator
 
           public void Save()
           {
+            if (!File.Exists(".save"))
+            {
+              File.Create(".save");
+            }
 
+            using (StreamWriter w = new StreamWriter(".save"))
+            {
+              w.WriteLine(balance.Cash);
+              w.WriteLine(balance.Card);
+            }
           }
 
           public void Load()
           {
-            File save = new File("./.save");
-
-            if (!save.Exists)
+            if (!File.Exists(".save"))
             {
               Introduction();
+            }
+            else
+            {
+              //load stuff
             }
           }
 
@@ -74,7 +87,7 @@ namespace Actual_Expense_Calculator
             {
               try
               {
-                using (StreamWriter w = File.AppendText("./.errorLog"))
+                using (StreamWriter w = File.AppendText("./.errorlog"))
                 {
                   w.WriteLine(e + "\n");
                 }
@@ -82,7 +95,7 @@ namespace Actual_Expense_Calculator
               }
               catch (FileNotFoundException)
               {
-                File errorLog = new File("./.errorLog");
+                File.Create("./.errorlog");
                 continue;
               }
             } while (true);
@@ -92,7 +105,7 @@ namespace Actual_Expense_Calculator
         class Expense
         {
           protected int Value {get; set;}
-          protected int Name {get; set;}
+          protected string Name {get; set;}
 
           public Expense()
           {
@@ -100,7 +113,7 @@ namespace Actual_Expense_Calculator
             this.Name = Console.ReadLine();
 
             Console.Write("Enter the value of the expense: ");
-            this.Value = Console.ReadLine();
+            this.Value = Convert.ToInt32(Console.ReadLine());
           }
         }
 
@@ -110,8 +123,7 @@ namespace Actual_Expense_Calculator
 
           public Constant()
           {
-            private int Interval {get; set;}
-            Console.Write("");
+            Console.Write("uoo");
           }
         }
 
@@ -121,19 +133,21 @@ namespace Actual_Expense_Calculator
 
           public OneTime()
           {
+            char userInput;
+
             do
             {
               Console.Write("Did you make this purchase today? (y/n): ");
 
               try
               {
-                char userInput = Convert.ToChar(Console.ReadLine().ToLower());
+                userInput = Convert.ToChar(Console.ReadLine().ToLower());
                 break;
               } catch (FormatException e)
               {
                 Console.WriteLine("You need to enter either 'y' or 'n' as an answer!");
 
-                FileManagment.LogError(e);
+                fileManagment.LogError(e);
                 continue;
               }
 
@@ -158,7 +172,7 @@ namespace Actual_Expense_Calculator
                 } catch (FormatException e)
                 {
                   Console.WriteLine("You need to enter the date in the specified format!");
-                  FileManagment.LogError(e)
+                  fileManagment.LogError(e);
                   continue;
                 }
               } while (true);
@@ -168,7 +182,7 @@ namespace Actual_Expense_Calculator
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            fileManagment.Load();
         }
     }
 }
