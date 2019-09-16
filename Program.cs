@@ -47,7 +47,7 @@ namespace Actual_Expense_Calculator
           fileManagment.Save();
         }
 
-        class FileManagment
+        sealed class FileManagment
         {
 
           public void Erase()
@@ -57,15 +57,10 @@ namespace Actual_Expense_Calculator
 
           public void Save()
           {
-            if (!File.Exists(".save"))
-            {
-              File.Create(".save");
-            }
-
             using (StreamWriter w = new StreamWriter(".save"))
             {
-              w.WriteLine(balance.Cash);
               w.WriteLine(balance.Card);
+              w.WriteLine(balance.Cash);
             }
           }
 
@@ -75,9 +70,11 @@ namespace Actual_Expense_Calculator
             {
               Introduction();
             }
-            else
+
+            using (StreamReader sr = new StreamReader(".save"))
             {
-              //load stuff
+              balance.Card = Convert.ToInt32(sr.ReadLine());
+              balance.Cash = Convert.ToInt32(sr.ReadLine());
             }
           }
 
@@ -183,6 +180,27 @@ namespace Actual_Expense_Calculator
         static void Main(string[] args)
         {
             fileManagment.Load();
+            Instructions();
+
+        }
+
+        static void Instructions()
+        {
+          using (StreamReader sr = new StreamReader(".info"))
+          {
+            Console.WriteLine(sr.ReadAll());
+          }
+        }
+
+        static void TakeInput()
+        {
+          bool loopCondition = true;
+          char input = Console.ReadKey().Key.ToChar();
+
+          switch (input)
+          {
+
+          }
         }
     }
 }
