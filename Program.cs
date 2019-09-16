@@ -7,7 +7,7 @@ namespace Actual_Expense_Calculator
     class Program
     {
         #region Static Fields
-        struct Balance
+      /*static*/ struct Balance
         {
           public int Cash; /*{get; set;}*/
           public int Card; /*{get; set;}*/
