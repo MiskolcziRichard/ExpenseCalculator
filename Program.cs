@@ -18,12 +18,55 @@ namespace Actual_Expense_Calculator
         static FileManagment fileManagment = new FileManagment();
         #endregion
 
+        static void RecordTransaction()
+        {
+          Console.WriteLine("\n------------------------------------------------------------\nWhich type of transaction would" +
+          " you like to put on record?\n------------------------------------------------------------\n");
+
+          Console.WriteLine("1.) One-time purchase\n");
+          Console.WriteLine("2.) Regular expense\n\n");
+
+          int input;
+
+          while (true)
+          {
+            Console.Write("//Your option: ");
+            input = Convert.ToInt32(Console.ReadLine());
+
+            if (input != 1 && input != 2)
+            {
+              Console.ForegroundColor = ConsoleColor.Red;
+              Console.Write("\n|!| ");
+              Console.ResetColor();
+              Console.Write("You must enter a valid option ");
+              Console.ForegroundColor = ConsoleColor.Red;
+              Console.Write("|!|\n");
+              Console.ResetColor();
+              continue;
+            }
+            else
+            {
+              break;
+            }
+          }
+
+          switch (input)
+          {
+            case 1:
+              Expense purchase = new OneTime();
+              break;
+            case 2:
+              Expense scheduled = new Scheduled();
+              break;
+          }
+        }
+
         static void Introduction()
         {
           Console.WriteLine("Hello!\n");
           Thread.Sleep(1000);
 
-          Console.WriteLine("We would like to ask for some of your financial informations.");
+          Console.WriteLine("We would like to ask for some of your financial information.");
           Thread.Sleep(1000);
 
           do
@@ -45,6 +88,9 @@ namespace Actual_Expense_Calculator
           } while (true);
 
           fileManagment.Save();
+
+          Thread.Sleep(500);
+          Instructions();
         }
 
         sealed class FileManagment
@@ -114,11 +160,11 @@ namespace Actual_Expense_Calculator
           }
         }
 
-        class Constant : Expense
+        class Scheduled : Expense
         {
           private int Interval {get; set;}
 
-          public Constant()
+          public Scheduled()
           {
             Console.Write("uoo");
           }
@@ -179,28 +225,53 @@ namespace Actual_Expense_Calculator
 
         static void Main(string[] args)
         {
-            fileManagment.Load();
-            Instructions();
+            Console.Clear();
+            Console.CursorVisible = true;
 
+            fileManagment.Load();
+
+            TakeInput();
         }
 
         static void Instructions()
         {
-          using (StreamReader sr = new StreamReader(".info"))
-          {
-            Console.WriteLine(sr.ReadAll());
-          }
+          Console.Clear();
+          Console.WriteLine("\n"+File.ReadAllText(".info"));
+          Console.WriteLine("- Press any key to continue -");
+          Console.CursorVisible = false;
+          Console.ReadKey(true);
+          Console.Clear();
+          Console.CursorVisible = true;
         }
 
         static void TakeInput()
         {
           bool loopCondition = true;
-          char input = Console.ReadKey().Key.ToChar();
 
-          switch (input)
+          while (loopCondition)
           {
+            Console.Write("$ ");
+            string input = Console.ReadLine();
 
+            switch (input.ToLower())
+            {
+              case "add":
+                RecordTransaction();
+                break;
+              case "help":
+                Instructions();
+                break;
+              case "exit":
+                fileManagment.Save();
+                loopCondition = false;
+                break;
+              default:
+                Console.WriteLine("\nThere is no such command as '{0}'!\nEnter 'Help' to see available commands!\n", input);
+                break;
+            }
           }
+
+          Console.Clear();
         }
     }
 }
