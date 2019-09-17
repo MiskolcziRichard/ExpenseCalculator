@@ -67,7 +67,7 @@ namespace Actual_Expense_Calculator
           Console.Write(message);
           Console.ForegroundColor = ConsoleColor.Red;
           Console.Write(" |!|\n");
-          Console.ResetColor
+          Console.ResetColor();
         }
 
         static void Introduction()
@@ -95,8 +95,6 @@ namespace Actual_Expense_Calculator
             }
           } while (true);
 
-          fileManagment.Save();
-
           Thread.Sleep(500);
           Instructions();
         }
@@ -106,7 +104,7 @@ namespace Actual_Expense_Calculator
 
           public void Erase()
           {
-            Alert("Proceeding will erase your save and you will lose all your data!");
+            Alert("Proceeding will delete your save and you will lose all your data!");
             string input;
 
             while (true)
@@ -116,23 +114,20 @@ namespace Actual_Expense_Calculator
 
               if (input != "yes" && input != "no")
               {
-                break;
+                Alert("You must enter a valid option!");
+                continue;
               }
               else
               {
-                Alert("You must enter a valid option!");
-                continue;
+                break;
               }
             }
 
             if (input == "yes")
             {
-              using (StreamWriter sw = new StreamWriter(".save"))
-              {
-                sw.WriteLine("");
-              }
+              File.Delete(".save");
 
-              Console.WriteLine("Save file erased!\nNote that saving your current session when exiting will still\nsave your current data!");
+              Console.WriteLine("\nSave file deleted!\nNote that saving your current session when exiting will still\nsave your current data!");
             }
           }
 
@@ -158,7 +153,7 @@ namespace Actual_Expense_Calculator
                 }
               }
 
-              if (input == "no")
+              if (input == "n")
               {
                 auth = false;
               }
@@ -180,11 +175,13 @@ namespace Actual_Expense_Calculator
             {
               Introduction();
             }
-
-            using (StreamReader sr = new StreamReader(".save"))
+            else
             {
-              balance.Card = Convert.ToInt32(sr.ReadLine());
-              balance.Cash = Convert.ToInt32(sr.ReadLine());
+              using (StreamReader sr = new StreamReader(".save"))
+              {
+                balance.Card = Convert.ToInt32(sr.ReadLine());
+                balance.Cash = Convert.ToInt32(sr.ReadLine());
+              }
             }
           }
 
