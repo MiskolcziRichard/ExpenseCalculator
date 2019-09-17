@@ -1,17 +1,21 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace Actual_Expense_Calculator
 {
     class Program
     {
         #region Static Fields
-      /*static*/ struct Balance
+        /*static*/ struct Balance
         {
           public int Cash; /*{get; set;}*/
           public int Card; /*{get; set;}*/
         }
+
+        static List<OneTime> oneTime = new List<OneTime>();
+        static List<Scheduled> scheduled = new List<Scheduled>();
 
         //I'm very ashamed of these two
         static Balance balance;
@@ -35,13 +39,7 @@ namespace Actual_Expense_Calculator
 
             if (input != 1 && input != 2)
             {
-              Console.ForegroundColor = ConsoleColor.Red;
-              Console.Write("\n|!| ");
-              Console.ResetColor();
-              Console.Write("You must enter a valid option ");
-              Console.ForegroundColor = ConsoleColor.Red;
-              Console.Write("|!|\n");
-              Console.ResetColor();
+              Alert("You must enter a valid option!");
               continue;
             }
             else
@@ -59,6 +57,17 @@ namespace Actual_Expense_Calculator
               Expense scheduled = new Scheduled();
               break;
           }
+        }
+
+        static void Alert(string message)
+        {
+          Console.ForegroundColor = ConsoleColor.Red;
+          Console.Write("\n|!| ");
+          Console.ResetColor();
+          Console.Write(message);
+          Console.ForegroundColor = ConsoleColor.Red;
+          Console.Write(" |!|\n");
+          Console.ResetColor
         }
 
         static void Introduction()
@@ -97,15 +106,71 @@ namespace Actual_Expense_Calculator
 
           public void Erase()
           {
+            Alert("Proceeding will erase your save and you will lose all your data!");
+            string input;
 
+            while (true)
+            {
+              Console.Write("\nAre you sure you want to proceed? ('yes' or 'no'): ");
+              input = Console.ReadLine().ToLower();
+
+              if (input != "yes" && input != "no")
+              {
+                break;
+              }
+              else
+              {
+                Alert("You must enter a valid option!");
+                continue;
+              }
+            }
+
+            if (input == "yes")
+            {
+              using (StreamWriter sw = new StreamWriter(".save"))
+              {
+                sw.WriteLine("");
+              }
+
+              Console.WriteLine("Save file erased!\nNote that saving your current session when exiting will still\nsave your current data!");
+            }
           }
 
-          public void Save()
+          public void Save(bool prompt = false)
           {
-            using (StreamWriter w = new StreamWriter(".save"))
+            bool auth = true;
+            if (prompt)
             {
-              w.WriteLine(balance.Card);
-              w.WriteLine(balance.Cash);
+              string input;
+              while (true)
+              {
+                Console.Write("Save current changes? ('y' or 'n'): ");
+                input = Console.ReadLine().ToLower();
+
+                if (input != "y" && input != "n")
+                {
+                  Alert("You must enter a valid option!");
+                  continue;
+                }
+                else
+                {
+                  break;
+                }
+              }
+
+              if (input == "no")
+              {
+                auth = false;
+              }
+            }
+
+            if (auth)
+            {
+              using (StreamWriter w = new StreamWriter(".save"))
+              {
+                w.WriteLine(balance.Card);
+                w.WriteLine(balance.Cash);
+              }
             }
           }
 
@@ -258,8 +323,11 @@ namespace Actual_Expense_Calculator
                 Instructions();
                 break;
               case "exit":
-                fileManagment.Save();
+                fileManagment.Save(true);
                 loopCondition = false;
+                break;
+              case "erase":
+                fileManagment.Erase();
                 break;
               default:
                 Console.WriteLine("\nThere is no such command as '{0}'!\nEnter 'Help' to see available commands!\n", input);
