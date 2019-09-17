@@ -79,10 +79,9 @@ namespace Actual_Expense_Calculator
               Console.Write("What is your cash amount?: ");
               balance.Cash = Convert.ToInt32(Console.ReadLine());
               break;
-            } catch (FormatException e)
+            } catch (FormatException)
             {
               Console.WriteLine("You can only enter numbers!");
-              fileManagment.LogError(e);
               continue;
             }
           } while (true);
@@ -124,25 +123,25 @@ namespace Actual_Expense_Calculator
             }
           }
 
-          public void LogError(Exception e)
-          {
-            do
-            {
-              try
-              {
-                using (StreamWriter w = File.AppendText("./.errorlog"))
-                {
-                  w.WriteLine(e + "\n");
-                }
-                break;
-              }
-              catch (FileNotFoundException)
-              {
-                File.Create("./.errorlog");
-                continue;
-              }
-            } while (true);
-          }
+        //   public void LogError(Exception )
+        //   {
+        //     do
+        //     {
+        //       try
+        //       {
+        //         using (StreamWriter w = File.AppendText("./.errorlog"))
+        //         {
+        //           w.WriteLine(e + "\n");
+        //         }
+        //         break;
+        //       }
+        //       catch (FileNotFoundException)
+        //       {
+        //         File.Create("./.errorlog");
+        //         continue;
+        //       }
+        //     } while (true);
+        //   }
         }
 
         class Expense
@@ -186,11 +185,9 @@ namespace Actual_Expense_Calculator
               {
                 userInput = Convert.ToChar(Console.ReadLine().ToLower());
                 break;
-              } catch (FormatException e)
+              } catch (FormatException)
               {
                 Console.WriteLine("You need to enter either 'y' or 'n' as an answer!");
-
-                fileManagment.LogError(e);
                 continue;
               }
 
@@ -212,10 +209,9 @@ namespace Actual_Expense_Calculator
                   this.PurchaseDate = Convert.ToDateTime(Console.ReadLine());
 
                   break;
-                } catch (FormatException e)
+                } catch (FormatException)
                 {
                   Console.WriteLine("You need to enter the date in the specified format!");
-                  fileManagment.LogError(e);
                   continue;
                 }
               } while (true);
