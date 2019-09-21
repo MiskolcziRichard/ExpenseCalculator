@@ -34,7 +34,7 @@ namespace Actual_Expense_Calculator
 
           while (true)
           {
-            Console.Write("//Your option: ");
+            Console.Write("Your option: ");
             input = Convert.ToInt32(Console.ReadLine());
 
             if (input != 1 && input != 2)
@@ -51,15 +51,17 @@ namespace Actual_Expense_Calculator
           switch (input)
           {
             case 1:
-              Expense purchase = new OneTime();
+              OneTime tmp = new OneTime();
+              oneTime.Add(tmp);
               break;
             case 2:
-              Expense scheduled = new Scheduled();
+              Scheduled tmp1 = new Scheduled();
+              scheduled.Add(tmp1);
               break;
           }
         }
 
-        static void Alert(string message)
+        static void Alert(string message = "Alert")
         {
           Console.ForegroundColor = ConsoleColor.Red;
           Console.Write("\n|!| ");
@@ -165,6 +167,21 @@ namespace Actual_Expense_Calculator
               {
                 w.WriteLine(balance.Card);
                 w.WriteLine(balance.Cash);
+
+                for (int i = 0; i < oneTime.Count; i++)
+                {
+                  w.WriteLine(oneTime[i].Name);
+                  w.WriteLine(oneTime[i].Value);
+                  w.WriteLine(oneTime[i].PurchaseDate);
+                }
+
+                for (int i = 0; i < scheduled.Count; i++)
+                {
+                  w.WriteLine(scheduled[i].Name);
+                  w.WriteLine(scheduled[i].Value);
+                  w.WriteLine(scheduled[i].Interval.num);
+                  w.WriteLine(scheduled[i].Interval.format);
+                }
               }
             }
           }
@@ -208,8 +225,8 @@ namespace Actual_Expense_Calculator
 
         class Expense
         {
-          protected int Value {get; set;}
-          protected string Name {get; set;}
+          public int Value {get; set;}
+          public string Name {get; set;}
 
           public Expense()
           {
@@ -223,17 +240,51 @@ namespace Actual_Expense_Calculator
 
         class Scheduled : Expense
         {
-          private int Interval {get; set;}
+          public struct Info
+          {
+            public char format; //"d" as 'day', 'm' as month and 'y' as 'year'
+            public int num; //TODO: take input for this value
+          }
+
+          public Info Interval = new Info();
 
           public Scheduled()
           {
-            Console.Write("uoo");
+            Console.WriteLine("How often do you make this purchase?");
+            Console.WriteLine("Select one of these options:");
+            Console.WriteLine("\nDay - 'd'");
+            Console.WriteLine("\nMonth - 'm'");
+            Console.WriteLine("\nYear - 'y'\n");
+
+            while (true)
+            {
+              Console.Write("//Your option: ");
+
+              try
+              {
+                this.Interval.format = Convert.ToChar(Console.ReadLine());
+                if (this.Interval.format != 'y' && this.Interval.format != 'm' && this.Interval.format != 'd')
+                {
+                  throw new IndexOutOfRangeException(); //TODO: change the exception type
+                }
+                break;
+              }
+              catch (FormatException)
+              {
+                Alert("You entered an incorrect format, please try again");
+                continue;
+              }
+              catch (IndexOutOfRangeException)
+              {
+                Alert("You need to enter one of these options: d/m/y");
+              }
+            }
           }
         }
 
         class OneTime : Expense
         {
-          private DateTime PurchaseDate {get; set;}
+          public DateTime PurchaseDate {get; set;}
 
           public OneTime()
           {
