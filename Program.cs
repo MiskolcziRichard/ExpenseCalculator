@@ -34,8 +34,7 @@ namespace Actual_Expense_Calculator
 
           while (true)
           {
-            Console.Write("Your option: ");
-            input = Convert.ToInt32(Console.ReadLine());
+            input = Convert.ToInt32(Input());
 
             if (input != 1 && input != 2)
             {
@@ -70,6 +69,14 @@ namespace Actual_Expense_Calculator
           Console.ForegroundColor = ConsoleColor.Red;
           Console.Write(" |!|\n");
           Console.ResetColor();
+        }
+
+        static string Input(string message = "Your option")
+        {
+          Console.ForegroundColor = ConsoleColor.Green;
+          Console.Write("//{0}: ", message);
+          Console.ResetColor();
+          return Console.ReadLine();
         }
 
         static void Introduction()
@@ -258,15 +265,18 @@ namespace Actual_Expense_Calculator
 
             while (true)
             {
-              Console.Write("//Your option: ");
-
               try
               {
-                this.Interval.format = Convert.ToChar(Console.ReadLine());
+                this.Interval.format = Convert.ToChar(Input());
+
                 if (this.Interval.format != 'y' && this.Interval.format != 'm' && this.Interval.format != 'd')
                 {
-                  throw new IndexOutOfRangeException(); //TODO: change the exception type
+                  throw new ArgumentException();
                 }
+
+                Console.WriteLine("Please supply the previously selected format with a number!");
+                Console.WriteLine("For example, if you selected 'month' in the previous step,\nand you make this purchase every three months, enter 3 here");
+                this.Interval.num = Convert.ToInt32(Input());
                 break;
               }
               catch (FormatException)
@@ -274,7 +284,7 @@ namespace Actual_Expense_Calculator
                 Alert("You entered an incorrect format, please try again");
                 continue;
               }
-              catch (IndexOutOfRangeException)
+              catch (ArgumentException)
               {
                 Alert("You need to enter one of these options: d/m/y");
               }
