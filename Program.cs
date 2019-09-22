@@ -76,6 +76,14 @@ namespace Actual_Expense_Calculator
             }
           }
 
+          public void List()
+          {
+            Console.WriteLine("\n-------------\nYour balance:\n-------------\n");
+            Console.WriteLine("- Account balance: {0}\n\n- Cash amount: {1}\n", balance.Card, balance.Cash);
+
+            //TODO: finish the rest once FileManagment.Load works
+          }
+
           public void Introduction()
           {
             Console.WriteLine("Hello!\n");
@@ -211,8 +219,6 @@ namespace Actual_Expense_Calculator
                 w.WriteLine(balance.Card);
                 w.WriteLine(balance.Cash);
 
-                w.WriteLine("#");
-
                 for (int i = 0; i < oneTime.Count; i++)
                 {
                   w.WriteLine(oneTime[i].Name);
@@ -253,9 +259,25 @@ namespace Actual_Expense_Calculator
             {
               using (StreamReader sr = new StreamReader(".save"))
               {
-                balance.Card = Convert.ToInt32(sr.ReadLine());
-                balance.Cash = Convert.ToInt32(sr.ReadLine());
+                Phase1(sr);
+                //TODO: finish the rest lol
               }
+            }
+
+            void Phase1(StreamReader sr)
+            {
+              balance.Card = Convert.ToInt32(sr.ReadLine());
+              balance.Cash = Convert.ToInt32(sr.ReadLine());
+            }
+
+            void Phase2()
+            {
+
+            }
+
+            void Phase3()
+            {
+
             }
           }
 
@@ -417,6 +439,9 @@ namespace Actual_Expense_Calculator
                 break;
               case "erase":
                 fileManagment.Erase();
+                break;
+              case "list":
+                util.List();
                 break;
               default:
                 Console.WriteLine("\nThere is no such command as '{0}'!\nEnter 'Help' to see available commands!\n", input);
