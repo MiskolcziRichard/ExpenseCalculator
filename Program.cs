@@ -17,113 +17,119 @@ namespace Actual_Expense_Calculator
         static List<OneTime> oneTime = new List<OneTime>();
         static List<Scheduled> scheduled = new List<Scheduled>();
 
-        //I'm very ashamed of these two
+        //I'm very ashamed of these
         static Balance balance;
         static FileManagment fileManagment = new FileManagment();
+        static Cli cli = new Cli();
+        static Util util = new Util();
         #endregion
 
-        static void RecordTransaction()
+        sealed class Util
         {
-          Console.WriteLine("\n------------------------------------------------------------\nWhich type of transaction would" +
-          " you like to put on record?\n------------------------------------------------------------\n");
-
-          Console.WriteLine("1.) One-time purchase\n");
-          Console.WriteLine("2.) Regular expense\n\n");
-
-          int input;
-
-          while (true)
+          public void RecordTransaction()
           {
-            input = Convert.ToInt32(Input());
+            Console.WriteLine("\n------------------------------------------------------------\nWhich type of transaction would" +
+            " you like to put on record?\n------------------------------------------------------------\n");
 
-            if (input != 1 && input != 2)
-            {
-              Alert("You must enter a valid option!");
-              continue;
-            }
-            else
-            {
-              break;
-            }
-          }
+            Console.WriteLine("1.) One-time purchase\n");
+            Console.WriteLine("2.) Regular expense\n\n");
 
-          switch (input)
-          {
-            case 1:
-              OneTime tmp = new OneTime();
-              oneTime.Add(tmp);
-              break;
-            case 2:
-              Scheduled tmp1 = new Scheduled();
-              scheduled.Add(tmp1);
-              break;
-          }
-        }
-
-        static void Alert(string message = "Alert")
-        {
-          Console.ForegroundColor = ConsoleColor.Red;
-          Console.Write("\n|!| ");
-          Console.ResetColor();
-          Console.Write(message);
-          Console.ForegroundColor = ConsoleColor.Red;
-          Console.Write(" |!|\n");
-          Console.ResetColor();
-        }
-
-        static string Input(string message = "Your option")
-        {
-          Console.ForegroundColor = ConsoleColor.Green;
-          Console.Write("//{0}: ", message);
-          Console.ResetColor();
-          return Console.ReadLine();
-        }
-
-        static void Introduction()
-        {
-          Console.WriteLine("Hello!\n");
-          Thread.Sleep(1000);
-
-          Console.WriteLine("We would like to ask for some of your financial information.");
-          Thread.Sleep(1000);
-
-          do
-          {
-            try
-            {
-              Console.Write("What is your account balance?: ");
-              balance.Card = Convert.ToInt32(Console.ReadLine());
-
-              Console.Write("What is your cash amount?: ");
-              balance.Cash = Convert.ToInt32(Console.ReadLine());
-              break;
-            } catch (FormatException)
-            {
-              Console.WriteLine("You can only enter numbers!");
-              continue;
-            }
-          } while (true);
-
-          Thread.Sleep(500);
-          Instructions();
-        }
-
-        sealed class FileManagment
-        {
-
-          public void Erase()
-          {
-            Alert("Proceeding will delete your save and you will lose all your data!");
-            string input;
+            int input;
 
             while (true)
             {
-              Console.Write("\nAre you sure you want to proceed? ('yes' or 'no'): ");
+              try
+              {
+                input = Convert.ToInt32(cli.Input());
+
+                if (input != 1 && input != 2)
+                {
+                  throw new ArgumentException();
+                }
+                else
+                {
+                  break;
+                }
+              }
+              catch (FormatException)
+              {
+                cli.Alert("You must enter a valid option!");
+                continue;
+              }
+              catch (ArgumentException)
+              {
+                cli.Alert("You must enter a valid option!");
+                continue;
+              }
+            }
+
+            switch (input)
+            {
+              case 1:
+                OneTime tmp = new OneTime();
+                oneTime.Add(tmp);
+                break;
+              case 2:
+                Scheduled tmp1 = new Scheduled();
+                scheduled.Add(tmp1);
+                break;
+            }
+          }
+
+          public void Introduction()
+          {
+            Console.WriteLine("Hello!\n");
+            Thread.Sleep(1000);
+
+            Console.WriteLine("We would like to ask for some of your financial information.");
+            Thread.Sleep(1000);
+
+            do
+            {
+              try
+              {
+                Console.Write("What is your account balance?: ");
+                balance.Card = Convert.ToInt32(Console.ReadLine());
+
+                Console.Write("What is your cash amount?: ");
+                balance.Cash = Convert.ToInt32(Console.ReadLine());
+                break;
+              } catch (FormatException)
+              {
+                cli.Alert("You can only enter numbers!");
+                continue;
+              }
+            } while (true);
+
+            Thread.Sleep(500);
+            Instructions();
+          }
+
+          public void Instructions()
+          {
+            Console.Clear();
+            Console.WriteLine("\n"+File.ReadAllText(".info"));
+            Console.WriteLine("- Press any key to continue -");
+            Console.CursorVisible = false;
+            Console.ReadKey(true);
+            Console.Clear();
+            Console.CursorVisible = true;
+          }
+        }
+
+        sealed class Cli
+        {
+          public string Prompt(string message, string option1 = "y", string option2 = "n")
+          {
+            string input = "";
+            while (true)
+            {
+              Console.Write("\n{0} ('{1}' or '{2}'): ", message, option1, option2);
               input = Console.ReadLine().ToLower();
 
-              if (input != "yes" && input != "no")
+              if (input != option1 && input != option2)
               {
-                Alert("You must enter a valid option!");
+                cli.Alert("You must enter a valid option!");
                 continue;
               }
               else
@@ -132,7 +138,37 @@ namespace Actual_Expense_Calculator
               }
             }
 
-            if (input == "yes")
+            return input;
+          }
+
+          public string Input(string message = "Your option")
+          {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("//{0}: ", message);
+            Console.ResetColor();
+            return Console.ReadLine();
+          }
+
+          public void Alert(string message = "Alert")
+          {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("\n|!| ");
+            Console.ResetColor();
+            Console.Write(message);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(" |!|\n");
+            Console.ResetColor();
+          }
+        }
+
+        sealed class FileManagment
+        {
+
+          public void Erase()
+          {
+            cli.Alert("Proceeding will delete your save and you will lose all your data!");
+
+            if (cli.Prompt("Are you sure you want to proceed?", "yes", "no") == "yes")
             {
               File.Delete(".save");
 
@@ -153,7 +189,7 @@ namespace Actual_Expense_Calculator
 
                 if (input != "y" && input != "n")
                 {
-                  Alert("You must enter a valid option!");
+                  cli.Alert("You must enter a valid option!");
                   continue;
                 }
                 else
@@ -175,12 +211,21 @@ namespace Actual_Expense_Calculator
                 w.WriteLine(balance.Card);
                 w.WriteLine(balance.Cash);
 
+                w.WriteLine("#");
+
                 for (int i = 0; i < oneTime.Count; i++)
                 {
                   w.WriteLine(oneTime[i].Name);
                   w.WriteLine(oneTime[i].Value);
                   w.WriteLine(oneTime[i].PurchaseDate);
+
+                  if (i != (scheduled.Count - 1))
+                  {
+                    w.WriteLine("-");
+                  }
                 }
+
+                w.WriteLine("#");
 
                 for (int i = 0; i < scheduled.Count; i++)
                 {
@@ -188,6 +233,11 @@ namespace Actual_Expense_Calculator
                   w.WriteLine(scheduled[i].Value);
                   w.WriteLine(scheduled[i].Interval.num);
                   w.WriteLine(scheduled[i].Interval.format);
+
+                  if (i != (scheduled.Count - 1))
+                  {
+                    w.WriteLine("-");
+                  }
                 }
               }
             }
@@ -197,7 +247,7 @@ namespace Actual_Expense_Calculator
           {
             if (!File.Exists(".save"))
             {
-              Introduction();
+              util.Introduction();
             }
             else
             {
@@ -240,8 +290,20 @@ namespace Actual_Expense_Calculator
             Console.Write("Enter the name of the new expense: ");
             this.Name = Console.ReadLine();
 
-            Console.Write("Enter the value of the expense: ");
-            this.Value = Convert.ToInt32(Console.ReadLine());
+            while (true)
+            {
+              try
+              {
+                Console.Write("Enter the value of the expense: ");
+                this.Value = Convert.ToInt32(Console.ReadLine());
+                break;
+              }
+              catch (FormatException)
+              {
+                cli.Alert("You entered an incorrect format, please try again");
+                continue;
+              }
+            }
           }
         }
 
@@ -257,17 +319,17 @@ namespace Actual_Expense_Calculator
 
           public Scheduled()
           {
-            Console.WriteLine("How often do you make this purchase?");
-            Console.WriteLine("Select one of these options:");
-            Console.WriteLine("\nDay - 'd'");
-            Console.WriteLine("\nMonth - 'm'");
-            Console.WriteLine("\nYear - 'y'\n");
-
             while (true)
             {
+              Console.WriteLine("\nHow often do you make this purchase?");
+              Console.WriteLine("Select one of these options:");
+              Console.WriteLine("\nDay - 'd'");
+              Console.WriteLine("\nMonth - 'm'");
+              Console.WriteLine("\nYear - 'y'\n");
+
               try
               {
-                this.Interval.format = Convert.ToChar(Input());
+                this.Interval.format = Convert.ToChar(cli.Input());
 
                 if (this.Interval.format != 'y' && this.Interval.format != 'm' && this.Interval.format != 'd')
                 {
@@ -276,17 +338,17 @@ namespace Actual_Expense_Calculator
 
                 Console.WriteLine("Please supply the previously selected format with a number!");
                 Console.WriteLine("For example, if you selected 'month' in the previous step,\nand you make this purchase every three months, enter 3 here");
-                this.Interval.num = Convert.ToInt32(Input());
+                this.Interval.num = Convert.ToInt32(cli.Input());
                 break;
               }
               catch (FormatException)
               {
-                Alert("You entered an incorrect format, please try again");
+                cli.Alert("You entered an incorrect format, please try again");
                 continue;
               }
               catch (ArgumentException)
               {
-                Alert("You need to enter one of these options: d/m/y");
+                cli.Alert("You need to enter one of these options: d/m/y");
               }
             }
           }
@@ -298,25 +360,7 @@ namespace Actual_Expense_Calculator
 
           public OneTime()
           {
-            char userInput;
-
-            do
-            {
-              Console.Write("Did you make this purchase today? (y/n): ");
-
-              try
-              {
-                userInput = Convert.ToChar(Console.ReadLine().ToLower());
-                break;
-              } catch (FormatException)
-              {
-                Console.WriteLine("You need to enter either 'y' or 'n' as an answer!");
-                continue;
-              }
-
-            } while (true);
-
-            if (userInput == 'y')
+            if (cli.Prompt("Did you make this purchase today?") == "y")
             {
               this.PurchaseDate = DateTime.Today;
             }
@@ -334,7 +378,7 @@ namespace Actual_Expense_Calculator
                   break;
                 } catch (FormatException)
                 {
-                  Console.WriteLine("You need to enter the date in the specified format!");
+                  cli.Alert("You need to enter the date in the specified format!");
                   continue;
                 }
               } while (true);
@@ -352,33 +396,20 @@ namespace Actual_Expense_Calculator
             TakeInput();
         }
 
-        static void Instructions()
-        {
-          Console.Clear();
-          Console.WriteLine("\n"+File.ReadAllText(".info"));
-          Console.WriteLine("- Press any key to continue -");
-          Console.CursorVisible = false;
-          Console.ReadKey(true);
-          Console.Clear();
-          Console.CursorVisible = true;
-        }
-
         static void TakeInput()
         {
           bool loopCondition = true;
 
           while (loopCondition)
           {
-            Console.Write("$ ");
-            string input = Console.ReadLine();
-
-            switch (input.ToLower())
+            string input = cli.Input("Command").ToLower();
+            switch (input)
             {
               case "add":
-                RecordTransaction();
+                util.RecordTransaction();
                 break;
               case "help":
-                Instructions();
+                util.Instructions();
                 break;
               case "exit":
                 fileManagment.Save(true);
