@@ -81,6 +81,14 @@ namespace Actual_Expense_Calculator
             Console.WriteLine("\n-------------\nYour balance:\n-------------\n");
             Console.WriteLine("- Account balance: {0}\n\n- Cash amount: {1}\n", balance.Card, balance.Cash);
 
+            Console.WriteLine("\n-------------------\nOne-time purchases:\n-------------------\n");
+
+            for (int i = 0; i < oneTime.Count; i++)
+            {
+              Console.WriteLine("- {0}:", oneTime[i].Name);
+              Console.WriteLine("       -" + oneTime[i].Value);
+              Console.WriteLine("       -" + oneTime[i].PurchaseDate.Date + "\n");
+            }
             //TODO: finish the rest once FileManagment.Load works
           }
 
@@ -259,7 +267,9 @@ namespace Actual_Expense_Calculator
             {
               using (StreamReader sr = new StreamReader(".save"))
               {
-                Phase1(sr);
+                Phase1(sr); //I'm not sure if 'ref' is needed to progress the StreamReader's iteration or not, just making sure
+                Phase2(sr);
+                // Phase3(ref sr);
                 //TODO: finish the rest lol
               }
             }
@@ -270,15 +280,28 @@ namespace Actual_Expense_Calculator
               balance.Cash = Convert.ToInt32(sr.ReadLine());
             }
 
-            void Phase2()
+            void Phase2(StreamReader sr)
             {
-
+              while (sr.Peek() != "#")
+              {
+                oneTime[oneTime.Count].Name = sr.ReadLine();
+                oneTime[oneTime.Count].Value = Convert.ToInt32(sr.ReadLine());
+                oneTime[oneTime.Count].PurchaseDate = Convert.ToDateTime(sr.ReadLine());
+                // OneTime tmp;
+                // tmp.Name = sr.ReadLine();
+                // tmp.Value = Convert.ToInt32(sr.ReadLine());
+                // tmp.PurchaseDate = Convert.ToDateTime(sr.ReadLine());
+                // oneTime.Add(tmp);
+              }
             }
 
-            void Phase3()
-            {
-
-            }
+            // void Phase3(ref StreamReader sr)
+            // {
+            //   while (sr.Peek() != "#")
+            //   {
+            //     scheduled[scheduled.Count]
+            //   }
+            // }
           }
 
         //   public void LogError(Exception )
