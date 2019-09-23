@@ -693,11 +693,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/miskolczir/Documents/Code/Console/C#/Actual Expense Calculator/Actual Expense Calculator.csproj",
+      "projectUniqueName": "/home/miskolczir/Documents/Code/Console/C#/ExpenseCalculator/Actual Expense Calculator.csproj",
       "projectName": "Actual Expense Calculator",
-      "projectPath": "/home/miskolczir/Documents/Code/Console/C#/Actual Expense Calculator/Actual Expense Calculator.csproj",
+      "projectPath": "/home/miskolczir/Documents/Code/Console/C#/ExpenseCalculator/Actual Expense Calculator.csproj",
       "packagesPath": "/home/miskolczir/.nuget/packages/",
-      "outputPath": "/home/miskolczir/Documents/Code/Console/C#/Actual Expense Calculator/obj/",
+      "outputPath": "/home/miskolczir/Documents/Code/Console/C#/ExpenseCalculator/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/miskolczir/.nuget/NuGet/NuGet.Config"
