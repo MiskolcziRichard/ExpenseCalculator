@@ -28,8 +28,7 @@ namespace Actual_Expense_Calculator
         {
           public void RecordTransaction()
           {
-            Console.WriteLine("\n------------------------------------------------------------\nWhich type of transaction would" +
-            " you like to put on record?\n------------------------------------------------------------\n");
+            cli.Title("Which type of transaction would you like to put on record?");
 
             Console.WriteLine("1.) One-time purchase\n");
             Console.WriteLine("2.) Regular expense\n\n");
@@ -78,10 +77,10 @@ namespace Actual_Expense_Calculator
 
           public void List()
           {
-            Console.WriteLine("\n-------------\nYour balance:\n-------------\n");
+            cli.Title("Your balances:");
             Console.WriteLine("- Account balance: {0}\n\n- Cash amount: {1}\n", balance.Card, balance.Cash);
 
-            Console.WriteLine("\n-------------------\nOne-time purchases:\n-------------------\n");
+            cli.Title("One-time purchases:");
 
             foreach (OneTime item in oneTime)
             {
@@ -90,7 +89,7 @@ namespace Actual_Expense_Calculator
               Console.WriteLine("       -" + item.PurchaseDate.Date + "\n");
             }
 
-            Console.WriteLine("\n--------------------\nScheduled purchases:\n--------------------\n");
+            cli.Title("Scheduled purchases:");
 
             foreach (Scheduled item in scheduled)
             {
@@ -158,6 +157,18 @@ namespace Actual_Expense_Calculator
 
         sealed class Cli
         {
+          public void Title(string message, string character = "-")
+          {
+            string line = "";
+
+            for (int i = 0; i < message.Length; i++)
+            {
+              line += character;
+            }
+
+            Console.WriteLine("\n" + line + "\n" + message + "\n" + line + "\n");
+          }
+
           public string Prompt(string message, string option1 = "y", string option2 = "n")
           {
             string input = "";
@@ -373,7 +384,7 @@ namespace Actual_Expense_Calculator
 
           public Info Interval = new Info();
 
-          public Scheduled(bool silent = false) : base(silent) //this will pass the silent parameter to the base class constructor 
+          public Scheduled(bool silent = false) : base(silent) //this will pass the silent parameter to the base class constructor
           {
             if (!silent)
             {
