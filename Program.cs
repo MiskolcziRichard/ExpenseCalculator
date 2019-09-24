@@ -85,8 +85,8 @@ namespace Actual_Expense_Calculator
             foreach (OneTime item in oneTime)
             {
               Console.WriteLine("- {0}:", item.Name);
-              Console.WriteLine("       -" + item.Value);
-              Console.WriteLine("       -" + item.PurchaseDate.Date + "\n");
+              Console.WriteLine("       - " + item.Value);
+              Console.WriteLine("       - " + item.PurchaseDate.Date + "\n");
             }
 
             cli.Title("Scheduled purchases:");
@@ -94,23 +94,23 @@ namespace Actual_Expense_Calculator
             foreach (Scheduled item in scheduled)
             {
               Console.WriteLine("- {0}:", item.Name);
-              Console.WriteLine("       -" + item.Value);
+              Console.WriteLine("       - " + item.Value);
 
-              string format = "";
-              switch (item.Interval.format)
+              string Format = "";
+              switch (item.Interval.Format)
               {
                 case 'd':
-                  format = "days";
+                  Format = "days";
                   break;
                 case 'm':
-                  format = "months";
+                  Format = "months";
                   break;
                 case 'y':
-                  format = "years";
+                  Format = "years";
                   break;
               }
 
-              Console.WriteLine("       Regularity: every {0} {1}", item.Interval.num, format + "\n");
+              Console.WriteLine("       Regularity: every {0} {1}", item.Interval.Num, Format + "\n");
             }
           }
 
@@ -119,7 +119,7 @@ namespace Actual_Expense_Calculator
             Console.WriteLine("Hello!\n");
             Thread.Sleep(1000);
 
-            Console.WriteLine("We would like to ask for some of your financial information.");
+            Console.WriteLine("We would like to ask for some of your financial inFormation.");
             Thread.Sleep(1000);
 
             do
@@ -134,7 +134,7 @@ namespace Actual_Expense_Calculator
                 break;
               } catch (FormatException)
               {
-                cli.Alert("You can only enter numbers!");
+                cli.Alert("You can only enter Numbers!");
                 continue;
               }
             } while (true);
@@ -267,10 +267,10 @@ namespace Actual_Expense_Calculator
                   w.WriteLine(oneTime[i].Value);
                   w.WriteLine(oneTime[i].PurchaseDate);
 
-                  if (i != (scheduled.Count - 1))
-                  {
-                    w.WriteLine("-");
-                  }
+                  // if (i != (scheduled.Count - 1))
+                  // {
+                  //   w.WriteLine("-");
+                  // }
                 }
 
                 w.WriteLine("#");
@@ -279,8 +279,8 @@ namespace Actual_Expense_Calculator
                 {
                   w.WriteLine(scheduled[i].Name);
                   w.WriteLine(scheduled[i].Value);
-                  w.WriteLine(scheduled[i].Interval.num);
-                  w.WriteLine(scheduled[i].Interval.format);
+                  w.WriteLine(scheduled[i].Interval.Num);
+                  w.WriteLine(scheduled[i].Interval.Format);
 
                   if (i != (scheduled.Count - 1))
                   {
@@ -301,10 +301,11 @@ namespace Actual_Expense_Calculator
             {
               using (StreamReader sr = new StreamReader(".save"))
               {
-                Phase1(sr); //I'm not sure if 'ref' is needed to progress the StreamReader's iteration or not, just making sure
+                Phase1(sr); //I'm not sure if 'ref' is needed to progress the StreamReader's iteration
+                            //or not, just making sure
+                            //Edit: nope
                 Phase2(sr);
-                // Phase3(ref sr);
-                //TODO: finish the rest lol
+                Phase3(sr);
               }
             }
 
@@ -316,7 +317,9 @@ namespace Actual_Expense_Calculator
 
             void Phase2(StreamReader sr)
             {
-              while (!sr.EndOfStream)
+              bool auth = true;
+
+              while (auth) //????????
               {
                 string streamInput = sr.ReadLine();
                 if (streamInput != "#")
@@ -326,21 +329,31 @@ namespace Actual_Expense_Calculator
                   // oneTime[oneTime.Count].PurchaseDate = Convert.ToDateTime(sr.ReadLine());
 
                   OneTime tmp = new OneTime(true);
-                  tmp.Name = sr.ReadLine();
+                  tmp.Name = streamInput;
                   tmp.Value = Convert.ToInt32(sr.ReadLine());
                   tmp.PurchaseDate = Convert.ToDateTime(sr.ReadLine());
                   oneTime.Add(tmp);
                 }
+                else
+                {
+                  auth = false;
+                }
               }
             }
 
-            // void Phase3(ref StreamReader sr)
-            // {
-            //   while (sr.Peek() != "#")
-            //   {
-            //     scheduled[scheduled.Count]
-            //   }
-            // }
+            void Phase3(StreamReader sr)
+            {
+              while (!sr.EndOfStream) //edit if more things will be saved in the future
+              {
+                Scheduled tmp = new Scheduled(true);
+                tmp.Name = sr.ReadLine();
+                tmp.Value = Convert.ToInt32(sr.ReadLine());
+                tmp.Interval.Num = Convert.ToInt32(sr.ReadLine());
+                tmp.Interval.Format = Convert.ToChar(sr.ReadLine());
+
+                scheduled.Add(tmp);
+              }
+            }
           }
         }
 
@@ -366,7 +379,7 @@ namespace Actual_Expense_Calculator
                 }
                 catch (FormatException)
                 {
-                  cli.Alert("You entered an incorrect format, please try again");
+                  cli.Alert("You entered an incorrect Format, please try again");
                   continue;
                 }
               }
@@ -378,8 +391,8 @@ namespace Actual_Expense_Calculator
         {
           public struct Info
           {
-            public char format; //"d" as 'day', 'm' as month and 'y' as 'year'
-            public int num; //TODO: take input for this value
+            public char Format; //"d" as 'day', 'm' as month and 'y' as 'year'
+            public int Num; //TODO: take input for this value
           }
 
           public Info Interval = new Info();
@@ -398,21 +411,21 @@ namespace Actual_Expense_Calculator
 
                 try
                 {
-                  this.Interval.format = Convert.ToChar(cli.Input());
+                  this.Interval.Format = Convert.ToChar(cli.Input());
 
-                  if (this.Interval.format != 'y' && this.Interval.format != 'm' && this.Interval.format != 'd')
+                  if (this.Interval.Format != 'y' && this.Interval.Format != 'm' && this.Interval.Format != 'd')
                   {
                     throw new ArgumentException();
                   }
 
-                  Console.WriteLine("Please supply the previously selected format with a number!");
+                  Console.WriteLine("Please supply the previously selected Format with a Number!");
                   Console.WriteLine("For example, if you selected 'month' in the previous step,\nand you make this purchase every three months, enter 3 here");
-                  this.Interval.num = Convert.ToInt32(cli.Input());
+                  this.Interval.Num = Convert.ToInt32(cli.Input());
                   break;
                 }
                 catch (FormatException)
                 {
-                  cli.Alert("You entered an incorrect format, please try again");
+                  cli.Alert("You entered an incorrect Format, please try again");
                   continue;
                 }
                 catch (ArgumentException)
@@ -438,7 +451,7 @@ namespace Actual_Expense_Calculator
               }
               else
               {
-                Console.WriteLine("Please specify the date of the purchase in the following format:");
+                Console.WriteLine("Please specify the date of the purchase in the following Format:");
 
                 do
                 {
@@ -450,7 +463,7 @@ namespace Actual_Expense_Calculator
                     break;
                   } catch (FormatException)
                   {
-                    cli.Alert("You need to enter the date in the specified format!");
+                    cli.Alert("You need to enter the date in the specified Format!");
                     continue;
                   }
                 } while (true);
