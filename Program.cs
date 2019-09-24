@@ -373,7 +373,7 @@ namespace Actual_Expense_Calculator
 
           public Info Interval = new Info();
 
-          public Scheduled(bool silent = false)
+          public Scheduled(bool silent = false) : base(silent) //this will pass the silent parameter to the base class constructor 
           {
             if (!silent)
             {
@@ -417,7 +417,7 @@ namespace Actual_Expense_Calculator
         {
           public DateTime PurchaseDate {get; set;}
 
-          public OneTime(bool silent = false)
+          public OneTime(bool silent = false) : base(silent)
           {
             if (!silent)
             {
