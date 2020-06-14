@@ -154,14 +154,23 @@ namespace Actual_Expense_Calculator
             if (t == typeof(OneTime))
             {
               util.ListTransactions(typeof(OneTime));
-              //TODO:finish
 
-              Console.WriteLine("Which detail would you like to modify?");
+              string name = cli.Input("Which transaction would you like to modify?").ToLower();
+              OneTime entry;
+              foreach (OneTime i in oneTime)
+              {
+                if (i.Name.ToLower() == name)
+                {
+                  entry = i;
+                  break;
+                }
+              }
+              //now we have the list entry to modify
 
-              string[] tmp = {"Name", "Value", "Date", "Payment method"};
-              cli.ListOptions(tmp);
-
-              System.Console.WriteLine("Sorry, this part of the program is not finished!");
+              System.Console.WriteLine("Which detail would you like to modify?");
+              string[] options = {"Name", "Value", "Payment method", "Date of purchase"};
+              cli.ListOptions(options);
+              //TODO: finish pls
             }
             else
             {
@@ -253,6 +262,15 @@ namespace Actual_Expense_Calculator
                 {
                   if (item.Name == inputString)
                   {
+                    if (item.Method == PaymentMethod.Card)
+                    {
+                      balance.Card += item.Value;
+                    }
+                    else
+                    {
+                      balance.Cash += item.Value;
+                    }
+                    //refunds deleted transaction, this was missing for some reason
 
                     oneTime.Remove(item);
                     break;
