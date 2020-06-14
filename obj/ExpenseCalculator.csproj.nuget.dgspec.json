@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/miskolczir/Asztal/ExpenseCalculator/ExpenseCalculator.csproj": {}
+    "/home/miskolczir/Letöltések/ExpenseCalculator/ExpenseCalculator.csproj": {}
   },
   "projects": {
-    "/home/miskolczir/Asztal/ExpenseCalculator/ExpenseCalculator.csproj": {
+    "/home/miskolczir/Letöltések/ExpenseCalculator/ExpenseCalculator.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/miskolczir/Asztal/ExpenseCalculator/ExpenseCalculator.csproj",
+        "projectUniqueName": "/home/miskolczir/Letöltések/ExpenseCalculator/ExpenseCalculator.csproj",
         "projectName": "ExpenseCalculator",
-        "projectPath": "/home/miskolczir/Asztal/ExpenseCalculator/ExpenseCalculator.csproj",
+        "projectPath": "/home/miskolczir/Letöltések/ExpenseCalculator/ExpenseCalculator.csproj",
         "packagesPath": "/home/miskolczir/.nuget/packages/",
-        "outputPath": "/home/miskolczir/Asztal/ExpenseCalculator/obj/",
+        "outputPath": "/home/miskolczir/Letöltések/ExpenseCalculator/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/miskolczir/.nuget/NuGet/NuGet.Config"
