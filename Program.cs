@@ -85,6 +85,90 @@ namespace Actual_Expense_Calculator
           //   }
           // }
           //oh my god why won't you work??!!
+          public void Exchange(bool dir) //when dir is false, its a deposit, if true, its a withdrawal
+          {
+            while (true)
+            {
+              try
+              {
+                int val = 0;
+                if (dir)
+                {
+                  System.Console.Write("(Note: leave blank to balance a debt!)\nEnter how much would you like to withdraw: ");
+                  
+                  string tmp = Console.ReadLine();
+                  
+                  if (tmp != "")
+                  {
+                    val = Convert.ToInt32(tmp);
+                  }
+                  else
+                  {
+                    if (balance.Cash >= 0)
+                    {
+                      System.Console.WriteLine("You are in no debt!");
+                    }
+                    else
+                    {
+                      val = (balance.Cash * -1);
+                    }
+                  }
+
+                  if (balance.Card >= val)
+                  {        
+                    balance.Card -= val;
+                    balance.Cash += val;
+                  }
+                  else
+                  {
+                    cli.Alert("You don't have enough credits for the transaction!");
+                  }
+
+                  break;
+                }
+                else
+                {
+                  System.Console.Write("(Note: leave blank to balance a debt!)\nEnter how much would you like to deposit: ");
+                  
+                  string tmp = Console.ReadLine();
+
+                  if (tmp != "")
+                  {
+                    val = Convert.ToInt32(tmp);
+                  }
+                  else
+                  {
+                    if (balance.Card >= 0)
+                    {
+                      System.Console.WriteLine("You are in no debt!");
+                    }
+                    else
+                    {
+                      val = (balance.Card * -1);
+                    }
+                  }
+                  
+                  if (balance.Cash >= val)
+                  {        
+                    balance.Cash -= val;
+                    balance.Card += val;
+                  }
+                  else
+                  {
+                    cli.Alert("You don't have enough credits for the transaction!");
+                  }
+                  
+                  break;
+                }
+              }
+              catch (FormatException)
+              {
+                cli.Alert("You entered an incorrect Format, please try again");
+                continue;
+              }
+            }
+          }
+
           public void EditTransaction()
           {
             switch (util.GetExpenseType())
@@ -733,6 +817,12 @@ namespace Actual_Expense_Calculator
                 break;
               case "edit":
                 util.EditTransaction();
+                break;
+              case "withdraw":
+                util.Exchange(true);
+                break;
+              case "deposit":
+                util.Exchange(false);
                 break;
               default:
                 Console.WriteLine("\nThere is no such command as '{0}'!\nEnter 'Help' to see available commands!\n", input);
