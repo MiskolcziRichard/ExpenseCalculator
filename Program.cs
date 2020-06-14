@@ -63,28 +63,7 @@ namespace Actual_Expense_Calculator
         #endregion
 
         sealed class Util
-        {
-          // public void ListTransactions<T>(List<T> list)
-          // {
-          //   // List<T> list = new List<T>();
-          //
-          //   if (list is List<OneTime>)
-          //   {
-          //     // list = oneTime;
-          //     cli.Title("One-time purchases:");
-          //   }
-          //   else if (list is List<Scheduled>)
-          //   {
-          //     // list = scheduled;
-          //     cli.Title("Scheduled purchases:");
-          //   }
-          //
-          //   foreach (T purchase in list)
-          //   {
-          //     purchase.List();
-          //   }
-          // }
-          //oh my god why won't you work??!!
+        {     
           public void Exchange(bool dir) //when dir is false, its a deposit, if true, its a withdrawal
           {
             while (true)
@@ -825,6 +804,9 @@ namespace Actual_Expense_Calculator
                 break;
               case "deposit":
                 util.Exchange(false);
+                break;
+              case "clear":
+                Console.Clear();
                 break;
               default:
                 Console.WriteLine("\nThere is no such command as '{0}'!\nEnter 'Help' to see available commands!\n", input);
