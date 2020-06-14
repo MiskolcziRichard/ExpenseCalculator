@@ -28,10 +28,10 @@ namespace Actual_Expense_Calculator
               // i.Method ? this.Cash -= i.Value : this.Card -= i.Value;
               switch (i.Method)
               {
-                case true:
+                case PaymentMethod.Cash:
                   this.Cash -= i.Value;
                   break;
-                case false:
+                case PaymentMethod.Card:
                   this.Card -= i.Value;
                   break;
               }
@@ -41,10 +41,10 @@ namespace Actual_Expense_Calculator
             {
               switch (i.Method)
               {
-                case true:
+                case PaymentMethod.Cash:
                   this.Cash -= i.Value;
                   break;
-                case false:
+                case PaymentMethod.Card:
                   this.Card -= i.Value;
                   break;
               }
@@ -150,19 +150,10 @@ namespace Actual_Expense_Calculator
 
           public void EditTransaction()
           {
-            switch (util.GetExpenseType())
+            Type t = util.GetExpenseType();
+            if (t == typeof(OneTime))
             {
-              case 1:
-                EditOneTime();
-                break;
-              case 2:
-                EditScheduled();
-                break;
-            }
-
-            void EditOneTime()
-            {
-              util.ListTransactions(true);
+              util.ListTransactions(typeof(OneTime));
               //TODO:finish
 
               Console.WriteLine("Which detail would you like to modify?");
@@ -172,17 +163,16 @@ namespace Actual_Expense_Calculator
 
               System.Console.WriteLine("Sorry, this part of the program is not finished!");
             }
-
-            void EditScheduled()
+            else
             {
-              util.ListTransactions(false);
+              util.ListTransactions(typeof(Scheduled));
               //TODO:finish
 
               System.Console.WriteLine("Sorry, this part of the program is not finished!");
             }
           }
 
-          public int GetExpenseType()
+          public Type GetExpenseType()
           {
             cli.Title("To what type does the transaction you would like to delete belong?");
 
@@ -215,27 +205,26 @@ namespace Actual_Expense_Calculator
               }
             }
 
-            return input;
+            return input == 1 ? typeof(OneTime) : typeof(Scheduled);
           }
 
-          public void ListTransactions(bool mode) //false = OneTime, true = Scheduled
+          public void ListTransactions(Type t)
           {
-            switch (mode)
+            if (t == typeof(OneTime))
             {
-              case false:
-                cli.Title("One-time transactions:");
-                foreach (OneTime purchase in oneTime)
-                {
-                  purchase.List();
-                }
-                break;
-              case true:
-                cli.Title("Scheduled purchases:");
-                foreach (Scheduled purchase in scheduled)
-                {
-                  purchase.List();
-                }
-                break;
+              cli.Title("One-time transactions:");
+              foreach (OneTime purchase in oneTime)
+              {
+                purchase.List();
+              }
+            }
+            else
+            {
+              cli.Title("Scheduled purchases:");
+              foreach (Scheduled purchase in scheduled)
+              {
+                purchase.List();
+              }
             }
           }
 
@@ -244,42 +233,44 @@ namespace Actual_Expense_Calculator
             balance.List();
 
             // util.ListTransactions<OneTime>(oneTime);
-            util.ListTransactions(false);
+            util.ListTransactions(typeof(OneTime));
 
             // util.ListTransactions<Scheduled>(scheduled);
-            util.ListTransactions(true);
+            util.ListTransactions(typeof(OneTime));
           }
 
           public void RemoveTransaction()
           {
               //TODO: please fix this horrible, horrible mess....
               string inputString;
-              switch (util.GetExpenseType())
+              
+              Type t = util.GetExpenseType();
+              if (t == typeof(OneTime))
               {
-                case 1:
-                  util.ListTransactions(false);
-                  inputString = cli.Input("Enter the name of the expense you want to delete");
-                  foreach (OneTime item in oneTime)
+                util.ListTransactions(typeof(OneTime));
+                inputString = cli.Input("Enter the name of the transaction you want to delete");
+                foreach (OneTime item in oneTime)
+                {
+                  if (item.Name == inputString)
                   {
-                    if (item.Name == inputString)
-                    {
-                      oneTime.Remove(item);
-                      break;
-                    }
+
+                    oneTime.Remove(item);
+                    break;
                   }
-                  break;
-                case 2:
-                  util.ListTransactions(true);
-                  inputString = cli.Input("Enter the name of the expense you want to delete");
-                  foreach (Scheduled item in scheduled)
+                }
+              }
+              else
+              {
+                util.ListTransactions(typeof(Scheduled));
+                inputString = cli.Input("Enter the name of the expense you want to delete");
+                foreach (Scheduled item in scheduled)
+                {
+                  if (item.Name == inputString)
                   {
-                    if (item.Name == inputString)
-                    {
-                      scheduled.Remove(item);
-                      break;
-                    }
+                    scheduled.Remove(item);
+                    break;
                   }
-                  break;
+                }
               }
           }
 
@@ -553,7 +544,7 @@ namespace Actual_Expense_Calculator
                   tmp.Name = streamInput;
                   tmp.Value = Convert.ToInt32(sr.ReadLine());
                   tmp.PurchaseDate = Convert.ToDateTime(sr.ReadLine());
-                  tmp.Method = Convert.ToBoolean(sr.ReadLine());
+                  tmp.Method = (PaymentMethod)Convert.ToInt32(sr.ReadLine());
                   oneTime.Add(tmp);
                 }
                 else
@@ -572,7 +563,7 @@ namespace Actual_Expense_Calculator
                 tmp.Value = Convert.ToInt32(sr.ReadLine());
                 tmp.Interval.Num = Convert.ToInt32(sr.ReadLine());
                 tmp.Interval.Format = Convert.ToChar(sr.ReadLine());
-                tmp.Method = Convert.ToBoolean(sr.ReadLine());
+                tmp.Method = (PaymentMethod)Convert.ToInt32(sr.ReadLine());
 
                 scheduled.Add(tmp);
               }
@@ -580,10 +571,11 @@ namespace Actual_Expense_Calculator
           }
         }
 
+        public enum PaymentMethod {Cash, Card};
+
         class Expense
         {
-          // public enum payment {Card, Cash};
-          public bool Method {get; set;} //true = cash, false = card
+          public PaymentMethod Method {get; set;}
           public int Value {get; set;}
           public string Name {get; set;}
 
@@ -605,18 +597,8 @@ namespace Actual_Expense_Calculator
                   string[] tmp = {"Cash", "Card"};
                   cli.ListOptions(tmp);
 
-                  string method = cli.Input();
-
-                  // method == "1" ? this.Method = true : this.Method = false;
-                  switch (method)
-                  {
-                    case "1":
-                      this.Method = true;
-                      break;
-                    case "2":
-                      this.Method = false;
-                      break;
-                  }
+                  int method = Convert.ToInt32(cli.Input());
+                  this.Method = (PaymentMethod)method;
 
                   break;
                 }
@@ -634,7 +616,7 @@ namespace Actual_Expense_Calculator
             Console.WriteLine("- {0}:", this.Name);
             Console.WriteLine("       - " + this.Value);
 
-            string method = this.Method ? "Cash" : "Card";
+            string method = Enum.GetName(typeof(PaymentMethod), this.Method);
             Console.WriteLine("       - " + method);
           }
         }
