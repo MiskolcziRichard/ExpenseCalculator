@@ -1,0 +1,9 @@
+------------------------------------------------------------
+- Enter 'List' to print out your saved information
+- Enter 'Add' to record a new transaction
+- Enter 'Help' to see this message
+- Enter 'Exit' to quit the program
+- Enter 'Remove' to remove a transaction
+- Enter 'Edit' to edit the details of a transaction
+- Enter 'Erase' to erase your save file
+------------------------------------------------------------

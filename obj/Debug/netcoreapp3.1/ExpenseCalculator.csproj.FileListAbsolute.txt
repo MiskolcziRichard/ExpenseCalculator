@@ -1,0 +1,11 @@
+/home/miskolczir/Asztal/ExpenseCalculator/bin/Debug/netcoreapp3.1/ExpenseCalculator
+/home/miskolczir/Asztal/ExpenseCalculator/bin/Debug/netcoreapp3.1/ExpenseCalculator.deps.json
+/home/miskolczir/Asztal/ExpenseCalculator/bin/Debug/netcoreapp3.1/ExpenseCalculator.runtimeconfig.json
+/home/miskolczir/Asztal/ExpenseCalculator/bin/Debug/netcoreapp3.1/ExpenseCalculator.runtimeconfig.dev.json
+/home/miskolczir/Asztal/ExpenseCalculator/bin/Debug/netcoreapp3.1/ExpenseCalculator.dll
+/home/miskolczir/Asztal/ExpenseCalculator/bin/Debug/netcoreapp3.1/ExpenseCalculator.pdb
+/home/miskolczir/Asztal/ExpenseCalculator/obj/Debug/netcoreapp3.1/ExpenseCalculator.csprojAssemblyReference.cache
+/home/miskolczir/Asztal/ExpenseCalculator/obj/Debug/netcoreapp3.1/ExpenseCalculator.AssemblyInfoInputs.cache
+/home/miskolczir/Asztal/ExpenseCalculator/obj/Debug/netcoreapp3.1/ExpenseCalculator.AssemblyInfo.cs
+/home/miskolczir/Asztal/ExpenseCalculator/obj/Debug/netcoreapp3.1/ExpenseCalculator.dll
+/home/miskolczir/Asztal/ExpenseCalculator/obj/Debug/netcoreapp3.1/ExpenseCalculator.pdb

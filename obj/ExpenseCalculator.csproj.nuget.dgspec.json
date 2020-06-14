@@ -1,0 +1,58 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/miskolczir/Asztal/ExpenseCalculator/ExpenseCalculator.csproj": {}
+  },
+  "projects": {
+    "/home/miskolczir/Asztal/ExpenseCalculator/ExpenseCalculator.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/miskolczir/Asztal/ExpenseCalculator/ExpenseCalculator.csproj",
+        "projectName": "ExpenseCalculator",
+        "projectPath": "/home/miskolczir/Asztal/ExpenseCalculator/ExpenseCalculator.csproj",
+        "packagesPath": "/home/miskolczir/.nuget/packages/",
+        "outputPath": "/home/miskolczir/Asztal/ExpenseCalculator/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/miskolczir/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.103/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
