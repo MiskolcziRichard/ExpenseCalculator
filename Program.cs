@@ -157,7 +157,7 @@ namespace Actual_Expense_Calculator
                   {
                     cli.Alert("You don't have enough credits for the transaction!");
                   }
-                  
+
                   break;
                 }
               }
@@ -551,6 +551,8 @@ namespace Actual_Expense_Calculator
                 Phase2(sr);
                 Phase3(sr);
               }
+
+              util.List();
             }
 
             void Phase1(StreamReader sr)
