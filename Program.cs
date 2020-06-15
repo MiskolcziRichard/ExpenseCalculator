@@ -29,7 +29,7 @@ namespace Actual_Expense_Calculator
             }
             else
             {
-              balance.Card -= item.Value;
+              balance.Cash -= item.Value;
             }
           }
 
@@ -41,7 +41,7 @@ namespace Actual_Expense_Calculator
             }
             else
             {
-              balance.Card += item.Value;
+              balance.Cash += item.Value;
             }
           }
         }
@@ -51,7 +51,7 @@ namespace Actual_Expense_Calculator
 
         //I'm very ashamed of these
         static Balance balance;
-        static FileManagment fileManagment = new FileManagment();
+        static FileManagment fileManager = new FileManagment();
         static Cli cli = new Cli();
         static Util util = new Util();
         #endregion
@@ -585,7 +585,7 @@ namespace Actual_Expense_Calculator
           }
         }
 
-        public enum PaymentMethod {Cash, Card};
+        public enum PaymentMethod {Cash = 1, Card};
 
         class Expense
         {
@@ -757,7 +757,7 @@ namespace Actual_Expense_Calculator
 
             try
             {
-              fileManagment.Load();
+              fileManager.Load();
             }
             catch (Exception)
             {
@@ -783,11 +783,11 @@ namespace Actual_Expense_Calculator
                 util.Instructions();
                 break;
               case "exit":
-                fileManagment.Save(true);
+                fileManager.Save(true);
                 loopCondition = false;
                 break;
               case "erase":
-                fileManagment.Erase();
+                fileManager.Erase();
                 break;
               case "list":
                 util.List();
