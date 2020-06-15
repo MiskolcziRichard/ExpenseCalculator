@@ -21,33 +21,27 @@ namespace Actual_Expense_Calculator
             Console.ResetColor();
           }
 
-          public void Update()
+          public void Pay(Expense item)
           {
-            foreach (OneTime i in oneTime)
+            if (item.Method == PaymentMethod.Card)
             {
-              // i.Method ? this.Cash -= i.Value : this.Card -= i.Value;
-              switch (i.Method)
-              {
-                case PaymentMethod.Cash:
-                  this.Cash -= i.Value;
-                  break;
-                case PaymentMethod.Card:
-                  this.Card -= i.Value;
-                  break;
-              }
+              balance.Card -= item.Value;
             }
-
-            foreach (Scheduled i in scheduled)
+            else
             {
-              switch (i.Method)
-              {
-                case PaymentMethod.Cash:
-                  this.Cash -= i.Value;
-                  break;
-                case PaymentMethod.Card:
-                  this.Card -= i.Value;
-                  break;
-              }
+              balance.Card -= item.Value;
+            }
+          }
+
+          public void Refund(Expense item)
+          {
+            if (item.Method == PaymentMethod.Card)
+            {
+              balance.Card += item.Value;
+            }
+            else
+            {
+              balance.Card += item.Value;
             }
           }
         }
@@ -171,6 +165,7 @@ namespace Actual_Expense_Calculator
               string[] options = {"Name", "Value", "Payment method", "Date of purchase"};
               cli.ListOptions(options);
               //TODO: finish pls
+              System.Console.WriteLine("Sorry, this part of the program is not finished!");
             }
             else
             {
@@ -245,12 +240,11 @@ namespace Actual_Expense_Calculator
             util.ListTransactions(typeof(OneTime));
 
             // util.ListTransactions<Scheduled>(scheduled);
-            util.ListTransactions(typeof(OneTime));
+            util.ListTransactions(typeof(Scheduled));
           }
 
           public void RemoveTransaction()
           {
-              //TODO: please fix this horrible, horrible mess....
               string inputString;
               
               Type t = util.GetExpenseType();
@@ -262,15 +256,12 @@ namespace Actual_Expense_Calculator
                 {
                   if (item.Name == inputString)
                   {
-                    if (item.Method == PaymentMethod.Card)
+                    switch (cli.Prompt("Would you like the value of the transaction to be refunded?"))
                     {
-                      balance.Card += item.Value;
+                      case "y":
+                        balance.Refund(item);
+                        break;
                     }
-                    else
-                    {
-                      balance.Cash += item.Value;
-                    }
-                    //refunds deleted transaction, this was missing for some reason
 
                     oneTime.Remove(item);
                     break;
@@ -285,6 +276,13 @@ namespace Actual_Expense_Calculator
                 {
                   if (item.Name == inputString)
                   {
+                    switch (cli.Prompt("Would you like the value of the transaction to be refunded?"))
+                    {
+                      case "y":
+                        balance.Refund(item);
+                        break;
+                    }
+
                     scheduled.Remove(item);
                     break;
                   }
@@ -339,8 +337,6 @@ namespace Actual_Expense_Calculator
                 scheduled.Add(tmp1);
                 break;
             }
-
-            balance.Update();
           }
 
           public void Introduction()
@@ -615,14 +611,13 @@ namespace Actual_Expense_Calculator
                   string[] tmp = {"Cash", "Card"};
                   cli.ListOptions(tmp);
 
-                  int method = Convert.ToInt32(cli.Input());
-                  this.Method = (PaymentMethod)method;
+                  this.Method = (PaymentMethod)Convert.ToInt32(cli.Input());
 
                   break;
                 }
                 catch (FormatException)
                 {
-                  cli.Alert("You entered an incorrect Format, please try again");
+                  cli.Alert("You entered an incorrect format, please try again");
                   continue;
                 }
               }
@@ -673,6 +668,8 @@ namespace Actual_Expense_Calculator
                   Console.WriteLine("Please supply the previously selected Format with a Number!");
                   Console.WriteLine("For example, if you selected 'month' in the previous step,\nand you make this purchase every three months, enter 3 here");
                   this.Interval.Num = Convert.ToInt32(cli.Input());
+
+                  balance.Pay(this);
                   break;
                 }
                 catch (FormatException)
@@ -741,6 +738,8 @@ namespace Actual_Expense_Calculator
                   }
                 } while (true);
               }
+
+              balance.Pay(this);
             }
           }
 
