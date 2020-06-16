@@ -12,12 +12,13 @@ namespace Actual_Expense_Calculator
         {
           public int Cash; /*{get; set;}*/
           public int Card; /*{get; set;}*/
+          public string Currency;
 
           public void List()
           {
             Console.ForegroundColor = ConsoleColor.Green;
             cli.Title("Your balances:");
-            Console.WriteLine("- Account balance: {0}\n\n- Cash amount: {1}\n", this.Card, this.Cash);
+            Console.WriteLine("- Account balance: {0} {1}\n\n- Cash amount: {2} {3}\n", this.Card, this.Currency, this.Cash, this.Currency);
             Console.ResetColor();
           }
 
@@ -144,41 +145,64 @@ namespace Actual_Expense_Calculator
 
           public void EditTransaction()
           {
-            Type t = util.GetExpenseType();
-            if (t == typeof(OneTime))
+            Expense entry;
+            int index;
+            Type type;
+
+            if (util.GetExpenseType("modify") == typeof(OneTime))
             {
-              util.ListTransactions(typeof(OneTime));
+              type = typeof(OneTime);
+              util.ListTransactions(type);
 
               string name = cli.Input("Which transaction would you like to modify?").ToLower();
-              OneTime entry;
+
               foreach (OneTime i in oneTime)
               {
                 if (i.Name.ToLower() == name)
                 {
                   entry = i;
+                  index = oneTime.IndexOf(i);
                   break;
                 }
               }
               //now we have the list entry to modify
-
-              System.Console.WriteLine("Which detail would you like to modify?");
-              string[] options = {"Name", "Value", "Payment method", "Date of purchase"};
-              cli.ListOptions(options);
-              //TODO: finish pls
-              System.Console.WriteLine("Sorry, this part of the program is not finished!");
             }
             else
             {
-              util.ListTransactions(typeof(Scheduled));
-              //TODO:finish
+              type = typeof(Scheduled);
+              util.ListTransactions(type);
 
-              System.Console.WriteLine("Sorry, this part of the program is not finished!");
+              string name = cli.Input("Which transaction would you like to modify?").ToLower();
+
+              foreach (Scheduled i in scheduled)
+              {
+                if (i.Name.ToLower() == name)
+                {
+                  entry = i;
+                  index = scheduled.IndexOf(i);
+                  break;
+                }
+              }
+            }          
+
+            System.Console.WriteLine("Which detail would you like to modify?");
+            string[] options;
+
+            if (type == typeof(OneTime))
+            {
+              options = ["Name", "Value", "Method", "Date"];
             }
+            else
+            {
+              options = ["Name", "Value", "Method", "Interval"];
+            }
+
+            //TODO: finish pls
           }
 
-          public Type GetExpenseType()
+          public Type GetExpenseType(string action)
           {
-            cli.Title("To what type does the transaction you would like to delete belong?");
+            cli.Title("To what type does the transaction you would like to {0} belong?", action);
 
             string[] tmp = {"One-time purchase", "Regular expense"};
             cli.ListOptions(tmp);
@@ -216,18 +240,24 @@ namespace Actual_Expense_Calculator
           {
             if (t == typeof(OneTime))
             {
-              cli.Title("One-time transactions:");
-              foreach (OneTime purchase in oneTime)
+              if (oneTime.Count > 0)
               {
-                purchase.List();
+                cli.Title("One-time transactions:");
+                foreach (OneTime purchase in oneTime)
+                {
+                  purchase.List();
+                }
               }
             }
             else
             {
-              cli.Title("Scheduled purchases:");
-              foreach (Scheduled purchase in scheduled)
+              if (scheduled.Count > 0)
               {
-                purchase.List();
+                cli.Title("Scheduled purchases:");
+                foreach (Scheduled purchase in scheduled)
+                {
+                  purchase.List();
+                }
               }
             }
           }
@@ -247,7 +277,7 @@ namespace Actual_Expense_Calculator
           {
               string inputString;
               
-              Type t = util.GetExpenseType();
+              Type t = util.GetExpenseType("delete");
               if (t == typeof(OneTime))
               {
                 util.ListTransactions(typeof(OneTime));
@@ -351,11 +381,8 @@ namespace Actual_Expense_Calculator
             {
               try
               {
-                Console.Write("What is your account balance?: ");
-                balance.Card = Convert.ToInt32(Console.ReadLine());
-
-                Console.Write("What is your cash amount?: ");
-                balance.Cash = Convert.ToInt32(Console.ReadLine());
+                balance.Card = Convert.ToInt32(cli.Input("What is your account balance?"));
+                balance.Cash = Convert.ToInt32(cli.Input("What is your cash amount?"));
                 break;
               } catch (FormatException)
               {
@@ -364,7 +391,10 @@ namespace Actual_Expense_Calculator
               }
             } while (true);
 
+            balance.Currency = cli.Input("What currency do you use?");
+
             Thread.Sleep(500);
+            System.Console.WriteLine("Thank you! Please enjoy, and feel free to submit feedback on my GitHub at\nhttps://github.com/MiskolcziRichard/ExpenseCalculator !");
             Instructions();
           }
 
@@ -496,6 +526,7 @@ namespace Actual_Expense_Calculator
               {
                 w.WriteLine(balance.Card);
                 w.WriteLine(balance.Cash);
+                w.WriteLine(balance.Currency);
 
                 foreach (OneTime i in oneTime)
                 {
@@ -543,6 +574,7 @@ namespace Actual_Expense_Calculator
             {
               balance.Card = Convert.ToInt32(sr.ReadLine());
               balance.Cash = Convert.ToInt32(sr.ReadLine());
+              balance.Currency = sr.ReadLine();
             }
 
             void Phase2(StreamReader sr)
@@ -627,7 +659,7 @@ namespace Actual_Expense_Calculator
           public virtual void List()
           {
             Console.WriteLine("- {0}:", this.Name);
-            Console.WriteLine("       - " + this.Value);
+            Console.WriteLine("       - {0} {1}", this.Value, balance.Currency);
 
             string method = Enum.GetName(typeof(PaymentMethod), this.Method);
             Console.WriteLine("       - " + method);
@@ -717,7 +749,7 @@ namespace Actual_Expense_Calculator
             {
               if (cli.Prompt("Did you make this purchase today?") == "y")
               {
-                this.PurchaseDate = DateTime.Today;
+                this.PurchaseDate = DateTime.Now;
               }
               else
               {
