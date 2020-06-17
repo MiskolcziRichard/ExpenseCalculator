@@ -145,14 +145,10 @@ namespace Actual_Expense_Calculator
 
           public void EditTransaction()
           {
-            Expense entry;
-            int index;
-            Type type;
 
             if (util.GetExpenseType("modify") == typeof(OneTime))
             {
-              type = typeof(OneTime);
-              util.ListTransactions(type);
+              util.ListTransactions(typeof(OneTime));
 
               string name = cli.Input("Which transaction would you like to modify?").ToLower();
 
@@ -160,8 +156,9 @@ namespace Actual_Expense_Calculator
               {
                 if (i.Name.ToLower() == name)
                 {
-                  entry = i;
-                  index = oneTime.IndexOf(i);
+                  OneTime obj = oneTime[oneTime.IndexOf(i)];
+                  balance.Refund(obj);
+                  obj = new OneTime();
                   break;
                 }
               }
@@ -169,8 +166,7 @@ namespace Actual_Expense_Calculator
             }
             else
             {
-              type = typeof(Scheduled);
-              util.ListTransactions(type);
+              util.ListTransactions(typeof(Scheduled));
 
               string name = cli.Input("Which transaction would you like to modify?").ToLower();
 
@@ -178,31 +174,16 @@ namespace Actual_Expense_Calculator
               {
                 if (i.Name.ToLower() == name)
                 {
-                  entry = i;
-                  index = scheduled.IndexOf(i);
+                  scheduled[scheduled.IndexOf(i)] = new Scheduled(); //what if i just do this instead? EDIT: oh wow this actually works
                   break;
                 }
               }
-            }          
-
-            System.Console.WriteLine("Which detail would you like to modify?");
-            string[] options;
-
-            if (type == typeof(OneTime))
-            {
-              options = ["Name", "Value", "Method", "Date"];
             }
-            else
-            {
-              options = ["Name", "Value", "Method", "Interval"];
-            }
-
-            //TODO: finish pls
           }
 
           public Type GetExpenseType(string action)
           {
-            cli.Title("To what type does the transaction you would like to {0} belong?", action);
+            cli.Title("To what type does the transaction you would like to "+action+" belong?");
 
             string[] tmp = {"One-time purchase", "Regular expense"};
             cli.ListOptions(tmp);
@@ -653,6 +634,8 @@ namespace Actual_Expense_Calculator
                   continue;
                 }
               }
+
+              balance.Pay(this);
             }
           }
 
@@ -700,8 +683,6 @@ namespace Actual_Expense_Calculator
                   Console.WriteLine("Please supply the previously selected Format with a Number!");
                   Console.WriteLine("For example, if you selected 'month' in the previous step,\nand you make this purchase every three months, enter 3 here");
                   this.Interval.Num = Convert.ToInt32(cli.Input());
-
-                  balance.Pay(this);
                   break;
                 }
                 catch (FormatException)
@@ -770,8 +751,6 @@ namespace Actual_Expense_Calculator
                   }
                 } while (true);
               }
-
-              balance.Pay(this);
             }
           }
 
