@@ -275,10 +275,10 @@ namespace Actual_Expense_Calculator
               if (t == typeof(OneTime))
               {
                 util.ListTransactions(typeof(OneTime));
-                inputString = cli.Input("Enter the name of the transaction you want to delete");
+                inputString = cli.Input("Enter the name of the transaction you want to delete").ToLower();
                 foreach (OneTime item in oneTime)
                 {
-                  if (item.Name == inputString)
+                  if (item.Name.ToLower() == inputString)
                   {
                     switch (cli.Prompt("Would you like the value of the transaction to be refunded?"))
                     {
@@ -295,10 +295,10 @@ namespace Actual_Expense_Calculator
               else
               {
                 util.ListTransactions(typeof(Scheduled));
-                inputString = cli.Input("Enter the name of the expense you want to delete");
+                inputString = cli.Input("Enter the name of the expense you want to delete").ToLower();
                 foreach (Scheduled item in scheduled)
                 {
-                  if (item.Name == inputString)
+                  if (item.Name.ToLower() == inputString)
                   {
                     switch (cli.Prompt("Would you like the value of the transaction to be refunded?"))
                     {
@@ -536,6 +536,7 @@ namespace Actual_Expense_Calculator
                 {
                   w.WriteLine(i.Name);
                   w.WriteLine(i.Value);
+                  w.WriteLine(i.PurchaseDate);
                   w.WriteLine(i.Interval.Num);
                   w.WriteLine(i.Interval.Format);
                   w.WriteLine((int)i.Method);
@@ -599,6 +600,7 @@ namespace Actual_Expense_Calculator
                 Scheduled tmp = new Scheduled(true);
                 tmp.Name = sr.ReadLine();
                 tmp.Value = Convert.ToInt32(sr.ReadLine());
+                tmp.PurchaseDate = Convert.ToDateTime(sr.ReadLine());
                 tmp.Interval.Num = Convert.ToInt32(sr.ReadLine());
                 tmp.Interval.Format = Convert.ToChar(sr.ReadLine());
                 tmp.Method = (PaymentMethod)Convert.ToInt32(sr.ReadLine());
@@ -660,7 +662,7 @@ namespace Actual_Expense_Calculator
           }
         }
 
-        class Scheduled : Expense
+        class Scheduled : OneTime
         {
           public struct Info
           {
@@ -676,7 +678,7 @@ namespace Actual_Expense_Calculator
             {
               while (true)
               {
-                Console.WriteLine("\nHow often do you make this purchase?");
+                Console.WriteLine("\nHow often will you make this purchase?");
                 Console.WriteLine("Select one of these options:");
                 Console.WriteLine("\nDay - 'd'");
                 Console.WriteLine("\nMonth - 'm'");
@@ -741,7 +743,7 @@ namespace Actual_Expense_Calculator
             {
               if (cli.Prompt("Did you make this purchase today?") == "y")
               {
-                this.PurchaseDate = DateTime.Now;
+                this.PurchaseDate = Convert.ToDateTime(DateTime.Now.ToShortDateString());
               }
               else
               {
@@ -768,7 +770,7 @@ namespace Actual_Expense_Calculator
           public override void List()
           {
             base.List();
-            Console.WriteLine("\t- " + this.PurchaseDate.Date + "\n");
+            Console.WriteLine("\t- " + this.PurchaseDate.Date.ToShortDateString() + "\n");
           }
         }
 
