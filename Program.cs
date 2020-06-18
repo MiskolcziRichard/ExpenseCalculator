@@ -16,10 +16,20 @@ namespace Actual_Expense_Calculator
 
           public void List()
           {
-            Console.ForegroundColor = ConsoleColor.Green;
-            cli.Title("Your balances:");
-            Console.WriteLine("- Account balance: {0} {1}\n\n- Cash amount: {2} {3}\n", this.Card, this.Currency, this.Cash, this.Currency);
+            cli.Title("Your balances:");  
+
+            Console.ForegroundColor = Evaluate(this.Card);          
+            Console.WriteLine("{0} {1}\t<== Account balance\n", this.Card, this.Currency);
+
+            Console.ForegroundColor = Evaluate(this.Cash);          
+            System.Console.WriteLine("{0} {1}\t<== Cash amount", this.Cash, this.Currency);
+            
             Console.ResetColor();
+          }
+
+          private ConsoleColor Evaluate(int value)
+          {
+            return value >= 0 ? ConsoleColor.Green : ConsoleColor.Red;
           }
 
           public void Pay(Expense item)
@@ -156,13 +166,13 @@ namespace Actual_Expense_Calculator
               {
                 if (i.Name.ToLower() == name)
                 {
-                  OneTime obj = oneTime[oneTime.IndexOf(i)];
+                  OneTime obj = oneTime[oneTime.IndexOf(i)]; //just so i can refund it
                   balance.Refund(obj);
                   obj = new OneTime();
+                  oneTime[oneTime.IndexOf(i)] = obj;
                   break;
                 }
               }
-              //now we have the list entry to modify
             }
             else
             {
@@ -174,7 +184,10 @@ namespace Actual_Expense_Calculator
               {
                 if (i.Name.ToLower() == name)
                 {
-                  scheduled[scheduled.IndexOf(i)] = new Scheduled(); //what if i just do this instead? EDIT: oh wow this actually works
+                  Scheduled obj = scheduled[scheduled.IndexOf(i)];
+                  balance.Refund(obj);
+                  obj = new Scheduled();
+                  scheduled[scheduled.IndexOf(i)] = obj; //what if i just do this instead? EDIT: oh wow this actually works
                   break;
                 }
               }
@@ -514,10 +527,10 @@ namespace Actual_Expense_Calculator
                   w.WriteLine(i.Name);
                   w.WriteLine(i.Value);
                   w.WriteLine(i.PurchaseDate);
-                  w.WriteLine(i.Method);
+                  w.WriteLine((int)i.Method);
                 }
 
-                w.WriteLine("#");
+                w.WriteLine("#--#");
 
                 foreach (Scheduled i in scheduled)
                 {
@@ -525,7 +538,7 @@ namespace Actual_Expense_Calculator
                   w.WriteLine(i.Value);
                   w.WriteLine(i.Interval.Num);
                   w.WriteLine(i.Interval.Format);
-                  w.WriteLine(i.Method);
+                  w.WriteLine((int)i.Method);
                 }
               }
             }
@@ -560,12 +573,10 @@ namespace Actual_Expense_Calculator
 
             void Phase2(StreamReader sr)
             {
-              bool auth = true;
-
-              while (auth)
+              while (true)
               {
                 string streamInput = sr.ReadLine();
-                if (streamInput != "#")
+                if (streamInput != "#--#")
                 {
                   OneTime tmp = new OneTime(true);
                   tmp.Name = streamInput;
@@ -576,7 +587,7 @@ namespace Actual_Expense_Calculator
                 }
                 else
                 {
-                  auth = false;
+                  break;
                 }
               }
             }
@@ -642,10 +653,10 @@ namespace Actual_Expense_Calculator
           public virtual void List()
           {
             Console.WriteLine("- {0}:", this.Name);
-            Console.WriteLine("       - {0} {1}", this.Value, balance.Currency);
+            Console.WriteLine("\t- {0} {1}", this.Value, balance.Currency);
 
             string method = Enum.GetName(typeof(PaymentMethod), this.Method);
-            Console.WriteLine("       - " + method);
+            Console.WriteLine("\t- " + method);
           }
         }
 
@@ -716,7 +727,7 @@ namespace Actual_Expense_Calculator
                 break;
             }
 
-            Console.WriteLine("       Regularity: every {0} {1}", this.Interval.Num, Format + "\n");
+            Console.WriteLine("\tRegularity: every {0} {1}", this.Interval.Num, Format + "\n");
           }
         }
 
@@ -757,7 +768,7 @@ namespace Actual_Expense_Calculator
           public override void List()
           {
             base.List();
-            Console.WriteLine("       - " + this.PurchaseDate.Date + "\n");
+            Console.WriteLine("\t- " + this.PurchaseDate.Date + "\n");
           }
         }
 
@@ -770,9 +781,10 @@ namespace Actual_Expense_Calculator
             {
               fileManager.Load();
             }
-            catch (Exception)
+            catch (Exception e)
             {
               cli.Alert("An error occured while loading your save. Did you edit the save file manually?");
+              System.Console.WriteLine(e.StackTrace);
             }
 
             TakeInput();
