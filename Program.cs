@@ -8,11 +8,30 @@ namespace Actual_Expense_Calculator
     class Program
     {
         #region Static Fields
-        /*static*/ struct Balance
+        class Balance
         {
-          public int Cash; /*{get; set;}*/
-          public int Card; /*{get; set;}*/
+          public int Cash;
+          public int Card;
           public string Currency;
+
+          public Balance()
+          {
+            do
+            {
+              try
+              {
+                this.Card = Convert.ToInt32(cli.Input("What is your account balance?"));
+                this.Cash = Convert.ToInt32(cli.Input("What is your cash amount?"));
+                break;
+              } catch (FormatException)
+              {
+                cli.Alert("You can only enter Numbers!");
+                continue;
+              }
+            } while (true);
+            
+            this.Currency = cli.Input("What currency do you use?");
+          }
 
           public void List()
           {
@@ -371,21 +390,7 @@ namespace Actual_Expense_Calculator
             Console.WriteLine("We would like to ask for some of your financial information.");
             Thread.Sleep(1000);
 
-            do
-            {
-              try
-              {
-                balance.Card = Convert.ToInt32(cli.Input("What is your account balance?"));
-                balance.Cash = Convert.ToInt32(cli.Input("What is your cash amount?"));
-                break;
-              } catch (FormatException)
-              {
-                cli.Alert("You can only enter Numbers!");
-                continue;
-              }
-            } while (true);
-
-            balance.Currency = cli.Input("What currency do you use?");
+            balance = new Balance();
 
             Thread.Sleep(500);
             System.Console.WriteLine("Thank you! Please enjoy, and feel free to submit feedback on my GitHub at\nhttps://github.com/MiskolcziRichard/ExpenseCalculator !");
@@ -822,6 +827,9 @@ namespace Actual_Expense_Calculator
                 break;
               case "edit":
                 util.EditTransaction();
+                break;
+              case "balance":
+                balance = new Balance();
                 break;
               case "withdraw":
                 util.Exchange(true);
