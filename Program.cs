@@ -8,13 +8,13 @@ namespace Actual_Expense_Calculator
     class Program
     {
         #region Static Fields
-        class Balance
+        class Profile
         {
           public int Cash;
           public int Card;
           public string Currency;
 
-          public Balance()
+          public Profile()
           {
             do
             {
@@ -29,20 +29,22 @@ namespace Actual_Expense_Calculator
                 continue;
               }
             } while (true);
-            
+
             this.Currency = cli.Input("What currency do you use?");
           }
 
           public void List()
           {
-            cli.Title("Your balances:");  
+            cli.Title("Your balances:");
 
-            Console.ForegroundColor = Evaluate(this.Card);          
+            Console.ForegroundColor = Evaluate(this.Card);
             Console.WriteLine("{0} {1}\t<== Account balance\n", this.Card, this.Currency);
 
-            Console.ForegroundColor = Evaluate(this.Cash);          
-            System.Console.WriteLine("{0} {1}\t<== Cash amount", this.Cash, this.Currency);
-            
+            Console.ForegroundColor = Evaluate(this.Cash);
+            System.Console.WriteLine("{0} {1}\t<== Cash amount"\n, this.Cash, this.Currency);
+
+            Console.ForegroundColor = Evaluate(this.Card + this.Cash);
+            Console.WriteLine("\n{0} {1}\t<== Total", this.Card+this.Cash, this.Currency);
             Console.ResetColor();
           }
 
@@ -55,11 +57,11 @@ namespace Actual_Expense_Calculator
           {
             if (item.Method == PaymentMethod.Card)
             {
-              balance.Card -= item.Value;
+              profile.Card -= item.Value;
             }
             else
             {
-              balance.Cash -= item.Value;
+              profile.Cash -= item.Value;
             }
           }
 
@@ -67,11 +69,11 @@ namespace Actual_Expense_Calculator
           {
             if (item.Method == PaymentMethod.Card)
             {
-              balance.Card += item.Value;
+              profile.Card += item.Value;
             }
             else
             {
-              balance.Cash += item.Value;
+              profile.Cash += item.Value;
             }
           }
         }
@@ -80,14 +82,14 @@ namespace Actual_Expense_Calculator
         static List<Scheduled> scheduled = new List<Scheduled>();
 
         //I'm very ashamed of these
-        static Balance balance;
+        static Profile profile;
         static FileManagment fileManager = new FileManagment();
         static Cli cli = new Cli();
         static Util util = new Util();
         #endregion
 
         sealed class Util
-        {     
+        {
           public void Exchange(bool dir) //when dir is false, its a deposit, if true, its a withdrawal
           {
             while (true)
@@ -97,30 +99,30 @@ namespace Actual_Expense_Calculator
                 int val = 0;
                 if (dir)
                 {
-                  System.Console.Write("(Note: leave blank to balance a debt!)\nEnter how much would you like to withdraw: ");
-                  
+                  System.Console.Write("(Note: leave blank to balance out a debt!)\nEnter how much would you like to withdraw: ");
+
                   string tmp = Console.ReadLine();
-                  
+
                   if (tmp != "")
                   {
                     val = Convert.ToInt32(tmp);
                   }
                   else
                   {
-                    if (balance.Cash >= 0)
+                    if (profile.Cash >= 0)
                     {
                       System.Console.WriteLine("You are in no debt!");
                     }
                     else
                     {
-                      val = (balance.Cash * -1);
+                      val = (profile.Cash * -1);
                     }
                   }
 
-                  if (balance.Card >= val)
-                  {        
-                    balance.Card -= val;
-                    balance.Cash += val;
+                  if (profile.Card >= val)
+                  {
+                    profile.Card -= val;
+                    profile.Cash += val;
                   }
                   else
                   {
@@ -131,8 +133,8 @@ namespace Actual_Expense_Calculator
                 }
                 else
                 {
-                  System.Console.Write("(Note: leave blank to balance a debt!)\nEnter how much would you like to deposit: ");
-                  
+                  System.Console.Write("(Note: leave blank to balance out a debt!)\nEnter how much would you like to deposit: ");
+
                   string tmp = Console.ReadLine();
 
                   if (tmp != "")
@@ -141,20 +143,20 @@ namespace Actual_Expense_Calculator
                   }
                   else
                   {
-                    if (balance.Card >= 0)
+                    if (profile.Card >= 0)
                     {
                       System.Console.WriteLine("You are in no debt!");
                     }
                     else
                     {
-                      val = (balance.Card * -1);
+                      val = (profile.Card * -1);
                     }
                   }
-                  
-                  if (balance.Cash >= val)
-                  {        
-                    balance.Cash -= val;
-                    balance.Card += val;
+
+                  if (profile.Cash >= val)
+                  {
+                    profile.Cash -= val;
+                    profile.Card += val;
                   }
                   else
                   {
@@ -186,7 +188,7 @@ namespace Actual_Expense_Calculator
                 if (i.Name.ToLower() == name)
                 {
                   OneTime obj = oneTime[oneTime.IndexOf(i)]; //just so i can refund it
-                  balance.Refund(obj);
+                  profile.Refund(obj);
                   obj = new OneTime();
                   oneTime[oneTime.IndexOf(i)] = obj;
                   break;
@@ -204,7 +206,7 @@ namespace Actual_Expense_Calculator
                 if (i.Name.ToLower() == name)
                 {
                   Scheduled obj = scheduled[scheduled.IndexOf(i)];
-                  balance.Refund(obj);
+                  profile.Refund(obj);
                   obj = new Scheduled();
                   scheduled[scheduled.IndexOf(i)] = obj; //what if i just do this instead? EDIT: oh wow this actually works
                   break;
@@ -256,10 +258,14 @@ namespace Actual_Expense_Calculator
               if (oneTime.Count > 0)
               {
                 cli.Title("One-time transactions:");
+                int sum = 0;
                 foreach (OneTime purchase in oneTime)
                 {
                   purchase.List();
+                  sum += purchase.Value;
                 }
+
+                Console.WriteLine("{0} {1}\t<== Total", sum, profile.Currency);
               }
             }
             else
@@ -267,17 +273,21 @@ namespace Actual_Expense_Calculator
               if (scheduled.Count > 0)
               {
                 cli.Title("Scheduled purchases:");
+                int sum = 0;
                 foreach (Scheduled purchase in scheduled)
                 {
                   purchase.List();
+                  sum += purchase.Value;
                 }
+
+                Console.WriteLine("{0} {1}\t<== Total", sum, profile.Currency);
               }
             }
           }
 
           public void List()
           {
-            balance.List();
+            profile.List();
 
             // util.ListTransactions<OneTime>(oneTime);
             util.ListTransactions(typeof(OneTime));
@@ -289,7 +299,7 @@ namespace Actual_Expense_Calculator
           public void RemoveTransaction()
           {
               string inputString;
-              
+
               Type t = util.GetExpenseType("delete");
               if (t == typeof(OneTime))
               {
@@ -302,7 +312,7 @@ namespace Actual_Expense_Calculator
                     switch (cli.Prompt("Would you like the value of the transaction to be refunded?"))
                     {
                       case "y":
-                        balance.Refund(item);
+                        profile.Refund(item);
                         break;
                     }
 
@@ -322,7 +332,7 @@ namespace Actual_Expense_Calculator
                     switch (cli.Prompt("Would you like the value of the transaction to be refunded?"))
                     {
                       case "y":
-                        balance.Refund(item);
+                        profile.Refund(item);
                         break;
                     }
 
@@ -390,7 +400,7 @@ namespace Actual_Expense_Calculator
             Console.WriteLine("We would like to ask for some of your financial information.");
             Thread.Sleep(1000);
 
-            balance = new Balance();
+            profile = new Profile();
 
             Thread.Sleep(500);
             System.Console.WriteLine("Thank you! Please enjoy, and feel free to submit feedback on my GitHub at\nhttps://github.com/MiskolcziRichard/ExpenseCalculator !");
@@ -523,9 +533,9 @@ namespace Actual_Expense_Calculator
             {
               using (StreamWriter w = new StreamWriter(".save"))
               {
-                w.WriteLine(balance.Card);
-                w.WriteLine(balance.Cash);
-                w.WriteLine(balance.Currency);
+                w.WriteLine(profile.Card);
+                w.WriteLine(profile.Cash);
+                w.WriteLine(profile.Currency);
 
                 foreach (OneTime i in oneTime)
                 {
@@ -572,9 +582,9 @@ namespace Actual_Expense_Calculator
 
             void Phase1(StreamReader sr)
             {
-              balance.Card = Convert.ToInt32(sr.ReadLine());
-              balance.Cash = Convert.ToInt32(sr.ReadLine());
-              balance.Currency = sr.ReadLine();
+              profile.Card = Convert.ToInt32(sr.ReadLine());
+              profile.Cash = Convert.ToInt32(sr.ReadLine());
+              profile.Currency = sr.ReadLine();
             }
 
             void Phase2(StreamReader sr)
@@ -653,14 +663,14 @@ namespace Actual_Expense_Calculator
                 }
               }
 
-              balance.Pay(this);
+              profile.Pay(this);
             }
           }
 
           public virtual void List()
           {
             Console.WriteLine("- {0}:", this.Name);
-            Console.WriteLine("\t- {0} {1}", this.Value, balance.Currency);
+            Console.WriteLine("\t- {0} {1}", this.Value, profile.Currency);
 
             string method = Enum.GetName(typeof(PaymentMethod), this.Method);
             Console.WriteLine("\t- " + method);
@@ -791,7 +801,7 @@ namespace Actual_Expense_Calculator
             catch (Exception e)
             {
               cli.Alert("An error occured while loading your save. Did you edit the save file manually?");
-              System.Console.WriteLine(e.StackTrace);
+              System.Console.WriteLine(e.StackTrace); //TODO: Remove once issue has been resolved
             }
 
             TakeInput();
@@ -828,8 +838,8 @@ namespace Actual_Expense_Calculator
               case "edit":
                 util.EditTransaction();
                 break;
-              case "balance":
-                balance = new Balance();
+              case "profile":
+                profile = new Profile();
                 break;
               case "withdraw":
                 util.Exchange(true);
