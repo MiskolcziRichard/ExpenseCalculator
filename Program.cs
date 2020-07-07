@@ -14,23 +14,26 @@ namespace Actual_Expense_Calculator
           public int Card;
           public string Currency;
 
-          public Profile()
+          public Profile(bool silent = false)
           {
-            do
+            if (!silent)
             {
-              try
+              do
               {
-                this.Card = Convert.ToInt32(cli.Input("What is your account balance?"));
-                this.Cash = Convert.ToInt32(cli.Input("What is your cash amount?"));
-                break;
-              } catch (FormatException)
-              {
-                cli.Alert("You can only enter Numbers!");
-                continue;
-              }
-            } while (true);
+                try
+                {
+                  this.Card = Convert.ToInt32(cli.Input("What is your account balance?"));
+                  this.Cash = Convert.ToInt32(cli.Input("What is your cash amount?"));
+                  break;
+                } catch (FormatException)
+                {
+                  cli.Alert("You can only enter Numbers!");
+                  continue;
+                }
+              } while (true);
 
-            this.Currency = cli.Input("What currency do you use?");
+              this.Currency = cli.Input("What currency do you use?");
+            }
           }
 
           public void List()
@@ -41,7 +44,7 @@ namespace Actual_Expense_Calculator
             Console.WriteLine("{0} {1}\t<== Account balance\n", this.Card, this.Currency);
 
             Console.ForegroundColor = Evaluate(this.Cash);
-            System.Console.WriteLine("{0} {1}\t<== Cash amount"\n, this.Cash, this.Currency);
+            System.Console.WriteLine("{0} {1}\t<== Cash amount\n", this.Cash, this.Currency);
 
             Console.ForegroundColor = Evaluate(this.Card + this.Cash);
             Console.WriteLine("\n{0} {1}\t<== Total", this.Card+this.Cash, this.Currency);
@@ -82,7 +85,7 @@ namespace Actual_Expense_Calculator
         static List<Scheduled> scheduled = new List<Scheduled>();
 
         //I'm very ashamed of these
-        static Profile profile;
+        static Profile profile = new Profile(true);
         static FileManagment fileManager = new FileManagment();
         static Cli cli = new Cli();
         static Util util = new Util();
@@ -403,7 +406,10 @@ namespace Actual_Expense_Calculator
             profile = new Profile();
 
             Thread.Sleep(500);
-            System.Console.WriteLine("Thank you! Please enjoy, and feel free to submit feedback on my GitHub at\nhttps://github.com/MiskolcziRichard/ExpenseCalculator !");
+            System.Console.WriteLine("Thank you! Please enjoy, and feel free to submit your feedback on my GitHub at https://github.com/MiskolcziRichard/ExpenseCalculator!\n");
+
+            Console.WriteLine("- Press any key to continue -");
+            Console.ReadKey();
             Instructions();
           }
 
@@ -509,7 +515,7 @@ namespace Actual_Expense_Calculator
               string input;
               while (true)
               {
-                Console.Write("Save current changes? ('y' or 'n'): ");
+                Console.Write("Save current session? ('y' or 'n'): ");
                 input = Console.ReadLine().ToLower();
 
                 if (input != "y" && input != "n")
@@ -794,15 +800,16 @@ namespace Actual_Expense_Calculator
             Console.Clear();
             Console.CursorVisible = true;
 
-            try
-            {
-              fileManager.Load();
-            }
-            catch (Exception e)
-            {
-              cli.Alert("An error occured while loading your save. Did you edit the save file manually?");
-              System.Console.WriteLine(e.StackTrace); //TODO: Remove once issue has been resolved
-            }
+            // try
+            // {
+            //   fileManager.Load();
+            // }
+            // catch (Exception e)
+            // {
+            //   cli.Alert("An error occured while loading your save. Did you edit the save file manually?");
+            //   System.Console.WriteLine(e.StackTrace); //TODO: Remove once issue has been resolved
+            // }
+            fileManager.Load();
 
             TakeInput();
         }
