@@ -31,3 +31,14 @@
 /home/miskolczir/Dokumentumok/ExpenseCalculator/obj/Debug/netcoreapp3.1/ExpenseCalculator.AssemblyInfo.cs
 /home/miskolczir/Dokumentumok/ExpenseCalculator/obj/Debug/netcoreapp3.1/ExpenseCalculator.dll
 /home/miskolczir/Dokumentumok/ExpenseCalculator/obj/Debug/netcoreapp3.1/ExpenseCalculator.pdb
+/home/miskolczir/Dokumentumok/Code/C#/ExpenseCalculator/bin/Debug/netcoreapp3.1/ExpenseCalculator
+/home/miskolczir/Dokumentumok/Code/C#/ExpenseCalculator/bin/Debug/netcoreapp3.1/ExpenseCalculator.deps.json
+/home/miskolczir/Dokumentumok/Code/C#/ExpenseCalculator/bin/Debug/netcoreapp3.1/ExpenseCalculator.runtimeconfig.json
+/home/miskolczir/Dokumentumok/Code/C#/ExpenseCalculator/bin/Debug/netcoreapp3.1/ExpenseCalculator.runtimeconfig.dev.json
+/home/miskolczir/Dokumentumok/Code/C#/ExpenseCalculator/bin/Debug/netcoreapp3.1/ExpenseCalculator.dll
+/home/miskolczir/Dokumentumok/Code/C#/ExpenseCalculator/bin/Debug/netcoreapp3.1/ExpenseCalculator.pdb
+/home/miskolczir/Dokumentumok/Code/C#/ExpenseCalculator/obj/Debug/netcoreapp3.1/ExpenseCalculator.csprojAssemblyReference.cache
+/home/miskolczir/Dokumentumok/Code/C#/ExpenseCalculator/obj/Debug/netcoreapp3.1/ExpenseCalculator.AssemblyInfoInputs.cache
+/home/miskolczir/Dokumentumok/Code/C#/ExpenseCalculator/obj/Debug/netcoreapp3.1/ExpenseCalculator.AssemblyInfo.cs
+/home/miskolczir/Dokumentumok/Code/C#/ExpenseCalculator/obj/Debug/netcoreapp3.1/ExpenseCalculator.dll
+/home/miskolczir/Dokumentumok/Code/C#/ExpenseCalculator/obj/Debug/netcoreapp3.1/ExpenseCalculator.pdb

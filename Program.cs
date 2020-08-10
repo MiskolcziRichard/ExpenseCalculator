@@ -104,7 +104,7 @@ namespace Actual_Expense_Calculator
                 {
                   System.Console.Write("(Note: leave blank to balance out a debt!)\nEnter how much would you like to withdraw: ");
 
-                  string tmp = Console.ReadLine();
+		  string tmp = Console.ReadLine();
 
                   if (tmp != "")
                   {

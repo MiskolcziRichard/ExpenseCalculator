@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/miskolczir/Dokumentumok/ExpenseCalculator/ExpenseCalculator.csproj",
+      "projectUniqueName": "/home/miskolczir/Dokumentumok/Code/C#/ExpenseCalculator/ExpenseCalculator.csproj",
       "projectName": "ExpenseCalculator",
-      "projectPath": "/home/miskolczir/Dokumentumok/ExpenseCalculator/ExpenseCalculator.csproj",
+      "projectPath": "/home/miskolczir/Dokumentumok/Code/C#/ExpenseCalculator/ExpenseCalculator.csproj",
       "packagesPath": "/home/miskolczir/.nuget/packages/",
-      "outputPath": "/home/miskolczir/Dokumentumok/ExpenseCalculator/obj/",
+      "outputPath": "/home/miskolczir/Dokumentumok/Code/C#/ExpenseCalculator/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/miskolczir/.nuget/NuGet/NuGet.Config"
